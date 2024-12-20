@@ -208,15 +208,14 @@ def executar_backups():
 
 # Obtém o horário agendado via API
 def obter_horario_backup():
-    url = f"{API_URL}/enterprises"
+    url = f"{API_URL}/enterprise"
     response = requests.get(url, headers=HEADERS)
     print('teste')
     if response.status_code == 200:
-        empresas = response.json()
-        if empresas and isinstance(empresas, list):
-            horario_backup = empresas[0].get("horario_backup")
-            print(f"Horário agendado para: {horario_backup}")
-            return horario_backup
+        empresa = response.json()
+        horario_backup = empresa.get("horario_backup")
+        print(f"Horário agendado para: {horario_backup}")
+        return horario_backup
     print(f"Erro ao obter horário: {response.status_code}")
     return None
 
