@@ -5,6 +5,7 @@ import requests
 import django
 import sys
 import environ
+import json
 
 from django.utils import timezone
 from pathlib import Path
@@ -90,7 +91,7 @@ def enviar_arquivo_ftp(caminho_arquivo, nome_equipamento):
     """
     servidor_ftp = "177.52.216.4"  # IP do servidor FTP
     usuario_ftp = "backup"
-    senha_ftp = "Anas2108@@1"
+    senha_ftp = "Anas2108@@"
     pasta_destino = f"/{nome_equipamento}/"  # Caminho correto no servidor FTP
     porta_ftp = 21  # Porta do FTP
 
@@ -146,6 +147,7 @@ def realizar_backup(equipamento):
     comando_backup = equipamento['ScriptEquipment']['Script']
     protocolo = equipamento['access_type'].upper()
 
+
     try:
         # Acessa o equipamento e realiza o backup
         data = {
@@ -158,9 +160,13 @@ def realizar_backup(equipamento):
             "nome_equipamento": equipamento['descricao'],
             "protocolo": protocolo,
         }
+        # Converte o dicionário em JSON com aspas duplas
+        json_data = json.dumps(data)
+        print(json_data)
 
-        resposta = requests.post(f'{API_URL}/service/acessar_equipamento', json=data, headers=HEADERS)
 
+        resposta = requests.post(f'{API_URL}/acessar_equipamento/', json=json_data, headers=HEADERS)
+        print(f"Resposta da API: {resposta.status_code} - {resposta.text}")
         if resposta:
             # Salva o backup localmente
             caminho_arquivo = salvar_backup(equipamento['descricao'], resposta)

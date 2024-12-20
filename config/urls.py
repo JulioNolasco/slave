@@ -18,6 +18,7 @@ from django.contrib import admin
 from django.urls import path
 from app import service
 
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('start_service/', service.processar_backups, name='start_service'),
