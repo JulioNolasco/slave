@@ -1,10 +1,12 @@
 import os
 import time
-from datetime import datetime
+from datetime import datetime, timedelta
 import requests
 import environ
 import json
 from pathlib import Path
+import paramiko
+import telnetlib
 
 env = environ.Env()
 
@@ -12,6 +14,7 @@ env = environ.Env()
 API_URL = env('API_URL')
 TOKEN = env('TOKEN_USUARIO')
 HEADERS = {"Authorization": f"Token {TOKEN}"}
+
 
 # Pasta de backups
 BASE_DIR = Path(__file__).resolve().parent
@@ -48,21 +51,25 @@ def atualizar_data_ultimo_backup():
 def salvar_backup(nome_equipamento, conteudo_backup):
     pasta_equipamento = PASTA_BACKUP / nome_equipamento
     pasta_equipamento.mkdir(parents=True, exist_ok=True)
-    print(f"Salvar aqui: {pasta_equipamento}")
 
     timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
     caminho_arquivo = pasta_equipamento / f"{nome_equipamento}_{timestamp}.txt"
 
     try:
-        # Se o conteúdo for uma string, salva diretamente
+        if not conteudo_backup:
+            print(f"Erro: conteúdo do backup está vazio para {nome_equipamento}.")
+            return None
+
+        # Salvar o conteúdo no arquivo
         with open(caminho_arquivo, "w", encoding="utf-8") as f:
             f.write(conteudo_backup)
         print(f"Backup salvo em: {caminho_arquivo}")
+
     except Exception as e:
         print(f"Erro ao salvar o backup no caminho {caminho_arquivo}: {e}")
+        return None
 
     return caminho_arquivo
-
 
 
 # Envia o arquivo de backup via API
@@ -99,28 +106,33 @@ def enviar_arquivo_ftp(caminho_arquivo, nome_equipamento):
 
     from ftplib import FTP
 
-    # Criando uma instância do cliente FTP
-    ftp = FTP()
-
-    # Conectando ao servidor FTP
-    ftp = FTP(servidor_ftp)
-    ftp.login(usuario_ftp, senha_ftp)
-
-    # Verifica se o diretório existe e se não, cria o diretório
+    print(f"Conectando ao servidor FTP: {servidor_ftp}")
     try:
-        ftp.mkd(pasta_destino)  # Cria o diretório de destino se não existir
-    except:
-        print(f"O diretório {pasta_destino} já existe no servidor FTP.")
+        # Criando uma instância do cliente FTP
+        ftp = FTP()
+        ftp.connect(servidor_ftp, porta_ftp)
+        ftp.login(usuario_ftp, senha_ftp)
 
-    # Mudando para o diretório de destino
-    ftp.cwd(pasta_destino)
+        print(f"Conectado ao FTP. Verificando diretório: {pasta_destino}")
+        # Verifica se o diretório existe e cria se necessário
+        try:
+            ftp.cwd(pasta_destino)
+        except Exception:
+            print(f"Diretório {pasta_destino} não existe. Criando...")
+            ftp.mkd(pasta_destino)
+            ftp.cwd(pasta_destino)
 
-    # Enviando o arquivo
-    with open(caminho_arquivo, "rb") as f:
-        ftp.storbinary(f"STOR {os.path.basename(caminho_arquivo)}", f)
+        # Envia o arquivo
+        with open(caminho_arquivo, "rb") as f:
+            nome_arquivo = os.path.basename(caminho_arquivo)
+            print(f"Enviando arquivo {nome_arquivo} para o FTP...")
+            ftp.storbinary(f"STOR {nome_arquivo}", f)
 
-    ftp.quit()
-    print(f"Backup {caminho_arquivo} enviado via FTP para {pasta_destino}.")
+        print(f"Arquivo {nome_arquivo} enviado com sucesso para {pasta_destino}")
+        ftp.quit()
+
+    except Exception as e:
+        print(f"Erro ao enviar o arquivo via FTP: {e}")
 
 
 # Atualiza o campo 'ultimo_backup' via API no servidor master
@@ -143,6 +155,24 @@ def atualizar_ultimo_backup(equipamento_id):
         print(f"Erro ao enviar atualização do último backup: {e}")
 
 
+def limpar_resposta(resposta, comando):
+    """
+    Limpa a resposta para remover o comando inicial e o prompt final.
+    """
+    linhas = resposta.splitlines()
+
+    # Remove o comando inicial
+    if linhas and comando in linhas[0]:
+        linhas.pop(0)
+
+    # Remove o prompt final
+    if linhas and linhas[-1].strip().endswith("#"):
+        linhas.pop(-1)
+
+    # Junta as linhas restantes
+    return "\n".join(linhas)
+
+
 def realizar_backup(equipamento):
     print(f"Iniciando backup para {equipamento['descricao']} ({equipamento['ip']})")
 
@@ -150,45 +180,49 @@ def realizar_backup(equipamento):
     protocolo = equipamento['access_type'].upper()
 
     try:
-        # Acessa o equipamento e realiza o backup
-        data = {
-            "id": equipamento['id'],
-            "ip": equipamento['ip'],
-            "usuario": equipamento['usuarioacesso'],
-            "senha": equipamento['senhaacesso'],
-            "porta": equipamento['portaacesso'],
-            "comando": comando_backup,
-            "nome_equipamento": equipamento['descricao'],
-            "protocolo": protocolo,
-        }
-        # Converte o dicionário em JSON com aspas duplas
-        json_data = json.dumps(data)
-        print(json_data)
+        # Escolhe a função correta (SSH ou Telnet) com base no protocolo
+        if protocolo == "SSH":
+            resposta = acessar_ssh(
+                id=equipamento['id'],
+                ip=equipamento['ip'],
+                usuario=equipamento['usuarioacesso'],
+                senha=equipamento['senhaacesso'],
+                porta=equipamento['portaacesso'],
+                comando=comando_backup,
+                nome_equipamento=equipamento['descricao']
+            )
+        elif protocolo == "TELNET":
+            resposta = acessar_telnet(
+                id=equipamento['id'],
+                ip=equipamento['ip'],
+                usuario=equipamento['usuarioacesso'],
+                senha=equipamento['senhaacesso'],
+                porta=equipamento['portaacesso'],
+                comando=comando_backup,
+                nome_equipamento=equipamento['descricao']
+            )
+        else:
+            print(f"Protocolo inválido: {protocolo}")
+            return
 
-        # Realiza a chamada da API
-        resposta = requests.post(f'{API_URL}/acessar_equipamento/', json=json_data, headers=HEADERS)
+        # Limpar a resposta
+        resposta_limpa = limpar_resposta(resposta, comando_backup)
+        print(f"Resposta limpa capturada:\n{resposta_limpa}")
 
-        # Verifique se a resposta da API foi bem-sucedida
-        if resposta.status_code == 200:
-            try:
-                # Converte o texto da resposta para um dicionário
-                conteudo_backup = json.loads(resposta.text)
-                print(f"Conteúdo do backup: {conteudo_backup}")
+        # Salvar backup apenas se a resposta limpa não estiver vazia
+        if resposta_limpa:
+            caminho_arquivo = salvar_backup(equipamento['descricao'], resposta_limpa)
+        else:
+            print(f"Resposta para {equipamento['descricao']} está vazia após limpeza. Backup não salvo.")
 
-                # Verifique se o conteúdo da resposta é um dicionário e contém a chave 'resultado'
-                if isinstance(conteudo_backup, dict) and 'resultado' in conteudo_backup:
-                    backup_data = conteudo_backup['resultado']
-                    # Salva o backup localmente
-                    caminho_arquivo = salvar_backup(equipamento['descricao'], backup_data)
-                else:
-                    print("A chave 'resultado' não foi encontrada na resposta ou o conteúdo não é um dicionário.")
-                    # Se não houver a chave 'resultado', salvamos a resposta diretamente
-                    caminho_arquivo = salvar_backup(equipamento['descricao'], conteudo_backup)
 
-                # Envia o backup via FTP
-                enviar_backup(equipamento['id'], caminho_arquivo, equipamento['descricao'])
-            except Exception as e:
-                print(f"Erro ao salvar ou enviar o backup: {e}")
+        caminho_arquivo = salvar_backup(equipamento['descricao'], resposta_limpa)
+
+        if caminho_arquivo is None:
+            print("Erro: Caminho do arquivo retornado é None. Abortando envio para o FTP.")
+            return
+
+        enviar_arquivo_ftp(caminho_arquivo, equipamento['descricao'])
 
         # Atualiza a data do último backup via API
         try:
@@ -206,7 +240,6 @@ def realizar_backup(equipamento):
         print(f"Erro ao realizar backup: {e}")
 
 
-# Função para executar backups de todos os equipamentos
 # Função para executar backups de todos os equipamentos
 def executar_backups():
     json = {
@@ -234,6 +267,168 @@ def executar_backups():
 
     else:
         print(f"Erro ao buscar equipamentos: {response.status_code}")
+
+
+"""
+Acessa o equipamento via SSH e executa comandos.
+"""
+def acessar_ssh(id, ip, usuario, senha, porta, comando, nome_equipamento, tempo_maximo=60):
+    cliente = paramiko.SSHClient()
+    cliente.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+
+    try:
+        cliente.connect(ip, port=porta, username=usuario, password=senha, timeout=30)
+
+        # Criação do canal
+        canal = cliente.invoke_shell()
+        canal.settimeout(2)
+
+        # Captura da mensagem inicial
+        print("Capturando mensagem inicial via SSH...")
+        capturar_prompt(canal, [">", "#"], 30)
+
+        # Desativar paginação
+        print("Desativando paginação via SSH...")
+        #canal.send("terminal length 0\n")
+        time.sleep(2)
+
+        # Aguardando estabilização
+        print("Aguardando equipamento estabilizar...")
+        time.sleep(2)
+
+        # Envia o comando principal
+        print(f"Executando comando via SSH no equipamento {nome_equipamento}...")
+        canal.send(comando + '\n')
+
+        # Captura da resposta
+        resposta = capturar_resposta(canal, [">", "#"], tempo_maximo)
+        return resposta
+
+    except paramiko.ssh_exception.SSHException as e:
+        # Este bloco captura erros relacionados ao SSH, incluindo problemas de chave
+        raise Exception(f"Erro ao acessar o equipamento via SSH: {str(e)}")
+
+    except Exception as e:
+        # Captura qualquer outro erro genérico
+        raise Exception(f"Erro geral ao acessar o equipamento via SSH: {str(e)}")
+
+    finally:
+
+        cliente.close()
+
+
+"""
+Acessa o equipamento via TELNET e executa comandos.
+"""
+def acessar_telnet(id, ip, usuario, senha, porta, comando, nome_equipamento, tempo_maximo=60):
+    """
+    Acessa o equipamento via Telnet e executa comandos.
+    """
+    try:
+        print(f"Conectando via Telnet ao equipamento {nome_equipamento}...")
+        cliente = telnetlib.Telnet(ip, port=porta, timeout=30)
+
+        # Envia credenciais
+        cliente.read_until(b"login: ", timeout=10)
+        cliente.write(usuario.encode('ascii') + b"\n")
+        cliente.read_until(b"Password: ", timeout=10)
+        cliente.write(senha.encode('ascii') + b"\n")
+
+        # Captura da mensagem inicial
+        print("Capturando mensagem inicial via Telnet...")
+        capturar_prompt(cliente, ">#", tempo_maximo)
+
+        # Desativando paginação
+        print("Desativando paginação via Telnet...")
+        cliente.write(b"terminal length 0\n")
+        time.sleep(2)
+        cliente.read_very_eager()  # Limpa o buffer
+
+        # Aguardando estabilização
+        print("Aguardando equipamento estabilizar...")
+        time.sleep(2)
+
+        # Envia o comando principal
+        print(f"Executando comando via Telnet no equipamento {nome_equipamento}...")
+        cliente.write(comando.encode('ascii') + b"\n")
+
+        # Captura da resposta
+        resposta = capturar_resposta(cliente, [">", "#"], tempo_maximo)
+        return resposta
+
+    except Exception as e:
+        raise Exception(f"Erro ao acessar o equipamento via Telnet: {str(e)}")
+
+# Função para capturar o prompt inicial
+def capturar_prompt(conexao, prompts, tempo_maximo):
+    """
+    Captura o prompt inicial até encontrar um dos prompts esperados ou estourar o tempo.
+    """
+    inicio = time.time()
+    while True:
+        if isinstance(conexao, paramiko.Channel) and conexao.recv_ready():
+            mensagem_inicial = conexao.recv(4096).decode('utf-8')
+            if any(mensagem_inicial.strip().endswith(p) for p in prompts):
+                print("Prompt inicial capturado via SSH.")
+                break
+        elif isinstance(conexao, telnetlib.Telnet):
+            mensagem_inicial = conexao.read_very_eager().decode('ascii')
+            if any(mensagem_inicial.strip().endswith(p) for p in prompts):
+                print("Prompt inicial capturado via Telnet.")
+                break
+
+        if time.time() - inicio > tempo_maximo:
+            raise Exception("Tempo limite ao capturar a mensagem inicial.")
+        time.sleep(1)
+
+def capturar_resposta(conexao, prompts, tempo_maximo):
+    """
+    Captura a resposta do comando até encontrar um dos prompts esperados ou estourar o tempo.
+    Lida corretamente com paginação (--More--) e continua executando o comando.
+    """
+    resposta = ""
+    inicio = time.time()
+
+    while True:
+        if isinstance(conexao, paramiko.Channel) and conexao.recv_ready():
+            resposta_parcial = conexao.recv(4096).decode('utf-8')
+
+            # Lida com paginação e envia espaço para continuar
+            if "--More--" in resposta_parcial:
+                conexao.send(" ")  # Envia espaço para continuar
+                resposta_parcial = resposta_parcial.replace("--More--", "")  # Remove '--More--'
+
+            resposta += resposta_parcial
+            print(f"Resposta parcial capturada via SSH:\n{resposta_parcial}")
+
+            # Verifica se chegou ao fim do comando
+            if any(resposta.strip().endswith(p) for p in prompts):
+                print("Comando concluído via SSH.")
+                break
+
+        elif isinstance(conexao, telnetlib.Telnet):
+            resposta_parcial = conexao.read_very_eager().decode('ascii')
+
+            # Lida com paginação e envia espaço para continuar
+            if "--More--" in resposta_parcial:
+                print("Detectado '--More--', enviando espaço via Telnet...")
+                conexao.write(b" ")  # Envia espaço para continuar
+                resposta_parcial = resposta_parcial.replace("--More--", "")  # Remove '--More--'
+
+            resposta += resposta_parcial
+            print(f"Resposta parcial capturada via Telnet:\n{resposta_parcial}")
+
+            # Verifica se chegou ao fim do comando
+            if any(resposta.strip().endswith(p) for p in prompts):
+                print("Comando concluído via Telnet.")
+                break
+
+        # Verifica tempo limite
+        if time.time() - inicio > tempo_maximo:
+            raise Exception("Tempo limite excedido ao aguardar resposta do equipamento.")
+        time.sleep(0.5)  # Reduzido para capturar dados com mais frequência
+
+    return resposta
 
 
 # Obtém o horário agendado via API
@@ -269,10 +464,21 @@ def processar_backups(request):
 
     while True:
         # Verifica se o backup já foi realizado hoje
-       # if backup_hoje_realizado():
-       #     print("Backup já realizado hoje. Aguardando amanhã...")
-       #     time.sleep(86400)  # Aguardar 24 horas (86400 segundos) para o próximo dia
-       #     continue  # Reinicia o loop para verificar o horário do novo dia
+        if backup_hoje_realizado():
+            print("Backup já realizado hoje. Aguardando próximo horário...")
+            with open("ultimo_backup.txt", 'r') as f:
+                ultima_execucao = datetime.fromisoformat(f.read().strip())
+
+            agora = datetime.now()
+            proximo_horario = ultima_execucao + timedelta(seconds=86400)  # Próximo horário após 24 horas
+
+            # Calcula o tempo restante até o próximo horário
+            diferenca = (proximo_horario - agora).total_seconds()
+            if diferenca > 0:
+                print(f"Esperando {diferenca // 3600} horas e {diferenca % 3600 // 60} minutos até o próximo backup...")
+                time.sleep(diferenca)
+            continue
+
         agora = datetime.now().strftime("%H:%M:%S")
         print(f"Horário atual: {agora}")
 

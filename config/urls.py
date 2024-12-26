@@ -23,3 +23,4 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('start_service/', service.processar_backups, name='start_service'),
 ]
+
