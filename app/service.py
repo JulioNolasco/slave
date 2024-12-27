@@ -366,6 +366,7 @@ def acessar_telnet(id, ip, usuario, senha, porta, comando, nome_equipamento, tem
     except Exception as e:
         raise Exception(f"Erro ao acessar o equipamento via Telnet: {str(e)}")
 
+
 # Função para capturar o prompt inicial
 def capturar_prompt(conexao, prompts, tempo_maximo):
     """
@@ -387,6 +388,7 @@ def capturar_prompt(conexao, prompts, tempo_maximo):
         if time.time() - inicio > tempo_maximo:
             raise Exception("Tempo limite ao capturar a mensagem inicial.")
         time.sleep(1)
+
 
 def capturar_resposta(conexao, prompts, tempo_maximo):
     """
