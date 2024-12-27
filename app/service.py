@@ -9,7 +9,9 @@ import paramiko
 import telnetlib
 import logging
 
+
 env = environ.Env()
+
 
 # Configurações da API
 API_URL = env('API_URL')
@@ -504,4 +506,3 @@ def processar_backups(request):
         else:
             print("Ainda não é o horário agendado. Aguardando...")
             time.sleep(30)
-

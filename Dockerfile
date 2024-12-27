@@ -1,7 +1,7 @@
 FROM python:3.12
 LABEL authors="julioNolasco"
 
-# Instalar iproute2 (para manipula            o de rotas)
+# Instalar iproute2 (para manipulcao de rotas)
 RUN apt-get update && apt-get install -y iproute2
 
 WORKDIR /app
