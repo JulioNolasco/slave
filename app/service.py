@@ -7,6 +7,7 @@ import json
 from pathlib import Path
 import paramiko
 import telnetlib
+import logging
 
 env = environ.Env()
 
@@ -276,6 +277,10 @@ def acessar_ssh(id, ip, usuario, senha, porta, comando, nome_equipamento, tempo_
     cliente = paramiko.SSHClient()
     cliente.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 
+    # Configuração básica para logs
+    logging.basicConfig(level=logging.ERROR, format='%(asctime)s - %(levelname)s - %(message)s')
+
+
     try:
         cliente.connect(ip, port=porta, username=usuario, password=senha, timeout=30)
 
@@ -306,10 +311,12 @@ def acessar_ssh(id, ip, usuario, senha, porta, comando, nome_equipamento, tempo_
 
     except paramiko.ssh_exception.SSHException as e:
         # Este bloco captura erros relacionados ao SSH, incluindo problemas de chave
+        print(f"Erro SSH: {str(e)}")
         raise Exception(f"Erro ao acessar o equipamento via SSH: {str(e)}")
 
     except Exception as e:
         # Captura qualquer outro erro genérico
+        print(f"Erro geral: {str(e)}")
         raise Exception(f"Erro geral ao acessar o equipamento via SSH: {str(e)}")
 
     finally:
