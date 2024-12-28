@@ -8,16 +8,21 @@ from pathlib import Path
 import paramiko
 import telnetlib
 import logging
+from requests.exceptions import RequestException
+from django.http import HttpResponse
+import threading
+import requests
+import environ
 
 
+# Carrega as variáveis de ambiente do arquivo .env
 env = environ.Env()
-
+environ.Env.read_env()  # Carrega o arquivo .env
 
 # Configurações da API
 API_URL = env('API_URL')
 TOKEN = env('TOKEN_USUARIO')
 HEADERS = {"Authorization": f"Token {TOKEN}"}
-
 
 # Pasta de backups
 BASE_DIR = Path(__file__).resolve().parent
@@ -156,6 +161,27 @@ def atualizar_ultimo_backup(equipamento_id):
             print(f"Erro ao atualizar último backup: {response.status_code} - {response.text}")
     except requests.exceptions.RequestException as e:
         print(f"Erro ao enviar atualização do último backup: {e}")
+
+
+# Atualiza o campo 'ultima_comunicacao' via API no servidor master
+def atualizar_ultima_comunicacao():
+    """
+    Atualiza a última comunicação da empresa no servidor master via API.
+    """
+    url = f"{API_URL}/enterprises/update_comunicacao/"
+    print(f"URL gerada para atualização: {url}")  # Depuração
+    data_atual = datetime.now().isoformat()
+    payload = {"ultima_comunicacao": data_atual}
+
+    try:
+        response = requests.patch(url, headers=HEADERS, json=payload)
+        print(f"Resposta do servidor: {response.status_code} - {response.text}")
+        if response.status_code == 200:
+            print(f"Última comunicação atualizada com sucesso. Data enviada: {data_atual}")
+        else:
+            print(f"Erro ao atualizar última comunicação: {response.status_code} - {response.text}")
+    except requests.exceptions.RequestException as e:
+        print(f"Erro ao enviar atualização da última comunicação: {e}")
 
 
 def limpar_resposta(resposta, comando):
@@ -442,20 +468,6 @@ def capturar_resposta(conexao, prompts, tempo_maximo):
     return resposta
 
 
-# Obtém o horário agendado via API
-def obter_horario_backup():
-    url = f"{API_URL}/enterprises"
-    response = requests.get(url, headers=HEADERS)
-    if response.status_code == 200:
-        empresas = response.json()
-        if empresas and isinstance(empresas, list):
-            horario_backup = empresas[0].get("horario_backup")
-            print(f"Horário agendado para: {horario_backup}")
-            return horario_backup
-    print(f"Erro ao obter horário: {response.status_code}")
-    return None
-
-
 # Envia o backup via FTP
 def enviar_backup(equipamento_id, caminho_arquivo, nome_equipamento):
     try:
@@ -466,28 +478,58 @@ def enviar_backup(equipamento_id, caminho_arquivo, nome_equipamento):
         print(f"Erro no envio via FTP: {e}")
 
 
-# Função principal para processar backups
-def processar_backups(request):
-    horario_agendado = obter_horario_backup()
-    if not horario_agendado:
-        print("Não foi possível obter o horário de backup.")
+# Obtém o horário agendado e o tempo de backup via API
+def obter_horario_backup():
+    url = f"{API_URL}/enterprises"
+    response = requests.get(url, headers=HEADERS)
+    if response.status_code == 200:
+        empresas = response.json()
+        if empresas and isinstance(empresas, list):
+            horario_backup = empresas[0].get("horario_backup")
+            tempo_backup = empresas[0].get("tempo_backup")
+            print(f"Horário agendado para: {horario_backup} e tempo em segundo de um backup para o outro: {tempo_backup}")
+            return horario_backup, tempo_backup
+    print(f"Erro ao obter dados da API: {response.status_code}")
+    return None, None
+
+
+# Função para rodar o backup em segundo plano
+def processar_backups_background():
+    horario_agendado, tempo_backup = obter_horario_backup()
+    if not horario_agendado or not tempo_backup:
+        print("Não foi possível obter o horário de backup ou o tempo de backup.")
         return
 
+    tempo_backup_segundos = tempo_backup
+
     while True:
-        # Verifica se o backup já foi realizado hoje
         if backup_hoje_realizado():
-            print("Backup já realizado hoje. Aguardando próximo horário...")
+
             with open("ultimo_backup.txt", 'r') as f:
                 ultima_execucao = datetime.fromisoformat(f.read().strip())
 
             agora = datetime.now()
-            proximo_horario = ultima_execucao + timedelta(seconds=86400)  # Próximo horário após 24 horas
+            proximo_horario = ultima_execucao + timedelta(seconds=tempo_backup_segundos)
+            print(f"Backup já realizado no dia {ultima_execucao}. Aguardando próximo backup, {proximo_horario}")
 
-            # Calcula o tempo restante até o próximo horário
-            diferenca = (proximo_horario - agora).total_seconds()
-            if diferenca > 0:
-                print(f"Esperando {diferenca // 3600} horas e {diferenca % 3600 // 60} minutos até o próximo backup...")
-                time.sleep(diferenca)
+            # Loop para exibir o tempo restante dinamicamente
+            while True:
+                diferenca = (proximo_horario - agora).total_seconds()
+
+                dias = diferenca // 86400
+                horas = (diferenca % 86400) // 3600
+                minutos = (diferenca % 3600) // 60
+                segundos = diferenca % 60
+                print(
+                    f"     Esperando {int(dias)} dias {int(horas):02}:{int(minutos):02}:{int(segundos):02} até o próximo backup...",
+                    end="\r")
+
+                if diferenca <= 0:
+                    print("Chegou o horário do próximo backup. Reiniciando processo...")
+                    break
+
+                time.sleep(60)  # Atualiza a cada segundo
+
             continue
 
         agora = datetime.now().strftime("%H:%M:%S")
@@ -497,12 +539,21 @@ def processar_backups(request):
             print("Horário alcançado! Executando backups...")
             executar_backups()
             atualizar_data_ultimo_backup()
-            time.sleep(60)  # Evita execução duplicada
+            time.sleep(30)
         elif agora > horario_agendado:
             print("O horário agendado passou. Executando os backups!")
             executar_backups()
             atualizar_data_ultimo_backup()
-            time.sleep(60)
+            time.sleep(30)
         else:
             print("Ainda não é o horário agendado. Aguardando...")
+            atualizar_ultima_comunicacao()
             time.sleep(30)
+
+
+# Função para iniciar o processo de backup
+def processar_backups(request):
+    # Rodar a função de backup em segundo plano usando threading
+    threading.Thread(target=processar_backups_background, daemon=True).start()
+
+    return HttpResponse("Backup em processamento. Verifique os logs para detalhes.")
