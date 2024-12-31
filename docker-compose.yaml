@@ -19,6 +19,7 @@ services:
         ipv4_address: 192.168.100.3
     entrypoint: ["sh", "-c", "/app/init_routes.sh && python manage.py runserver 0.0.0.0:8002"]
     restart: always
+    user: "root"
 
   wireguard-client:
     image: linuxserver/wireguard
@@ -47,6 +48,7 @@ services:
     sysctls:
       - net.ipv4.conf.all.src_valid_mark=1
     restart: unless-stopped
+    user: "root"
 
 networks:
   custom-network:
