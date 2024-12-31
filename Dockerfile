@@ -15,8 +15,8 @@ RUN mkdir -p /root/.ssh && \
 
 # Defina permissões adequadas para o diretório e o arquivo
 RUN chmod 700 /root/.ssh && \
-    chmod 644 /root/.ssh/known_hosts
-    chmod 777 /etc/enable_forwarding.sh
+    chmod 644 /root/.ssh/known_hosts && \
+    chmod 777 /etc/enable_forwarding.sh && \
     chmod 777 /app/init_routes.sh
 
 WORKDIR /app
