@@ -15,7 +15,7 @@ RUN mkdir -p /root/.ssh && \
 
 # Defina permissões adequadas para o diretório e o arquivo
 RUN chmod 700 /root/.ssh && \
-    chmod 644 /root/.ssh/known_hosts && \
+    chmod 644 /root/.ssh/known_hosts
 
 WORKDIR /app
 
