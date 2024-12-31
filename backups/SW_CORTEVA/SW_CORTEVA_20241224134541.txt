@@ -1,0 +1,426 @@
+show running-config | nomore
+aaa authentication-order [ local ]
+aaa user admin
+ password $1$vULTMZLB$du9g2nKsU9nbqO7H6MGiG0
+ group admin
+!
+dot1q
+ vlan 74
+  name OSPF_DEPOSITO_TRANS-NORTE
+  interface ten-gigabit-ethernet-1/1/1
+  !
+ !
+ vlan 106
+  name OSPF-TAQUARI
+  interface ten-gigabit-ethernet-1/1/2
+  !
+ !
+ vlan 887
+  name OSPF_DEPOSITO
+  interface gigabit-ethernet-1/1/5
+    untagged
+  !
+ !
+!
+mpls ldp
+ lsr-id loopback-0
+  interface l3-OSPF-DEPOSITO
+  !
+  interface l3-OSPF-TAQUARI
+  !
+  interface l3-OSPF_DEPOSITO_NORTE
+  !
+  neighbor targeted 10.255.255.15
+  !
+  neighbor targeted 10.255.255.30
+  !
+ !
+!
+mpls l2vpn
+ vpws-group 255.0_TRANS-NORTE_600-601
+  vpn TRANS-NORTE_CORTEVA-601
+   neighbor 10.255.255.30
+    pw-type vlan
+    pw-load-balance
+     flow-label both
+    !
+    pw-id 2559601
+   !
+   access-interface ten-gigabit-ethernet-1/1/1
+    dot1q 601
+   !
+  !
+ !
+ vpls-group 255.30_SW-COLINA
+  vpn PTP_CISCO_CORTEVA
+   vfi
+    pw-type vlan 1309
+    neighbor 10.255.255.30
+     pw-id 25591309
+     pw-load-balance
+      flow-label both
+     !
+    !
+   !
+   bridge-domain
+    qinq
+    access-interface gigabit-ethernet-1/1/1
+     encapsulation
+      dot1q 1309
+      untagged
+     !
+    !
+    access-interface gigabit-ethernet-1/1/2
+     encapsulation
+      dot1q 1309
+      untagged
+     !
+    !
+   !
+  !
+  vpn PTP_EXPEREON
+   vfi
+    pw-type vlan 10
+    neighbor 10.255.255.30
+     pw-id 255910
+     pw-load-balance
+      flow-label both
+     !
+    !
+   !
+   bridge-domain
+    qinq
+    access-interface gigabit-ethernet-1/1/4
+     encapsulation
+      dot1q 10
+      untagged
+     !
+    !
+   !
+  !
+ !
+!
+snmp traps config-commit
+snmp traps cpu-core
+snmp traps cpu-load
+snmp traps link-status
+snmp traps login-success
+snmp agent enabled
+snmp agent version v2c
+snmp agent version v3
+snmp community idcorpbrasil
+ sec-name idcorpbrasil
+!
+snmp community public
+ sec-name public
+!
+snmp notify std_v1_trap
+ tag std_v1_trap
+!
+snmp notify std_v2_inform
+ tag std_v2_inform
+ type inform
+!
+snmp notify std_v2_trap
+ tag std_v2_trap
+!
+snmp notify std_v3_inform
+ tag std_v3_inform
+ type inform
+!
+snmp notify std_v3_trap
+ tag std_v3_trap
+!
+snmp vacm group idcorpbrasil
+ member idcorpbrasil
+  sec-model [ v2c ]
+ !
+ access "" v2c no-auth-no-priv
+  read-view root
+  write-view root
+ !
+!
+snmp vacm group public
+ member public
+  sec-model [ v2c ]
+ !
+ access "" v2c no-auth-no-priv
+  read-view root
+  write-view root
+  notify-view root
+ !
+!
+snmp vacm view root
+ subtree 1.3
+  included
+ !
+!
+interface gigabit-ethernet 1/1/1
+ description CORTEVA
+ no shutdown
+ negotiation
+ duplex full
+ speed 100M
+ advertising-abilities 10Mfull 100Mfull 1Gfull
+ mdix auto
+ mtu 12266
+!
+interface gigabit-ethernet 1/1/2
+ no shutdown
+ negotiation
+ duplex full
+ speed 100M
+ advertising-abilities 10Mfull 100Mfull 1Gfull
+ mdix auto
+ mtu 12266
+!
+interface gigabit-ethernet 1/1/3
+ no shutdown
+ negotiation
+ duplex full
+ speed 100M
+ advertising-abilities 10Mfull 100Mfull 1Gfull
+ mdix auto
+ mtu 12266
+!
+interface gigabit-ethernet 1/1/4
+ description EXPEREO
+ no shutdown
+ negotiation
+ duplex full
+ speed 100M
+ advertising-abilities 10Mfull 100Mfull 1Gfull
+ mdix auto
+ mtu 12266
+!
+interface gigabit-ethernet 1/1/5
+ description SIM
+ no shutdown
+ negotiation
+ duplex full
+ speed 1G
+ advertising-abilities 10Mfull 100Mfull 1Gfull
+ mdix normal
+ mtu 12266
+!
+interface gigabit-ethernet 1/1/6
+ no shutdown
+ negotiation
+ duplex full
+ speed 1G
+ advertising-abilities 10Mfull 100Mfull 1Gfull
+ mdix normal
+ mtu 12266
+!
+interface gigabit-ethernet 1/1/7
+ description CLI-EXPEREO
+ no shutdown
+ negotiation
+ duplex full
+ speed 1G
+ advertising-abilities 10Mfull 100Mfull 1Gfull
+ mdix normal
+ mtu 12266
+!
+interface gigabit-ethernet 1/1/8
+ description CLI_CORTEVA
+ no shutdown
+ negotiation
+ duplex full
+ speed 1G
+ advertising-abilities 10Mfull 100Mfull 1Gfull
+ mdix normal
+ mtu 12266
+!
+interface ten-gigabit-ethernet 1/1/1
+ description TRO_NORTE
+ no shutdown
+ no negotiation
+ duplex full
+ speed 10G
+ advertising-abilities 10Mfull 100Mfull 1Gfull
+ mdix normal
+ mtu 12266
+!
+interface ten-gigabit-ethernet 1/1/2
+ description DIR_TAQUARI
+ no shutdown
+ no negotiation
+ duplex full
+ speed 10G
+ advertising-abilities 10Mfull 100Mfull 1Gfull
+ mdix normal
+ mtu 12266
+!
+interface ten-gigabit-ethernet 1/1/3
+ no shutdown
+ no negotiation
+ duplex full
+ speed 10G
+ advertising-abilities 10Mfull 100Mfull 1Gfull
+ mdix normal
+ mtu 12266
+!
+interface ten-gigabit-ethernet 1/1/4
+ no shutdown
+ no negotiation
+ duplex full
+ speed 10G
+ advertising-abilities 10Mfull 100Mfull 1Gfull
+ mdix normal
+ mtu 12266
+!
+interface l3 OSPF-COLINA_via_NORTE
+!
+interface l3 OSPF-DEPOSITO
+ lower-layer-if vlan 887
+ ipv4 address 10.20.20.42/31
+!
+interface l3 OSPF-TAQUARI
+ lower-layer-if vlan 106
+ ipv4 address 10.20.20.41/31
+!
+interface l3 OSPF_DEPOSITO_NORTE
+ lower-layer-if vlan 74
+ ipv4 address 10.20.20.45/31
+!
+interface mgmt 1/1/1
+ ipv4 address 192.168.0.25/24
+!
+interface loopback 0
+ ipv4 address 10.255.255.9/32
+!
+hostname sw01_corteva
+telnet-server disabled
+qos interface gigabit-ethernet-1/1/2
+ rate-limit
+  egress
+   bandwidth 120000
+   burst 2000
+  !
+  ingress
+   bandwidth 120000
+   burst 2000
+  !
+ !
+!
+qos interface gigabit-ethernet-1/1/4
+ rate-limit
+  egress
+   bandwidth 120000
+   burst 2000
+  !
+  ingress
+   bandwidth 120000
+   burst 2000
+  !
+ !
+!
+oam
+ efm
+  interface gigabit-ethernet-1/1/1
+   mode passive
+  !
+  interface gigabit-ethernet-1/1/2
+   mode passive
+  !
+  interface gigabit-ethernet-1/1/3
+   mode passive
+  !
+  interface gigabit-ethernet-1/1/4
+   mode passive
+  !
+  interface gigabit-ethernet-1/1/5
+   mode passive
+  !
+  interface gigabit-ethernet-1/1/6
+   mode passive
+  !
+  interface gigabit-ethernet-1/1/7
+   mode passive
+  !
+  interface gigabit-ethernet-1/1/8
+   mode passive
+  !
+  interface ten-gigabit-ethernet-1/1/1
+   mode passive
+  !
+  interface ten-gigabit-ethernet-1/1/2
+   mode passive
+  !
+  interface ten-gigabit-ethernet-1/1/3
+   mode passive
+  !
+  interface ten-gigabit-ethernet-1/1/4
+   mode passive
+  !
+ !
+!
+loopback-detection
+ destination-address alternative
+!
+mac-address-table
+ aging-time 600
+!
+layer2-control-protocol
+ tunnel-mac datacom
+ tunnel-priority 7
+!
+switchport
+ interface gigabit-ethernet-1/1/5
+  native-vlan
+   vlan-id 887
+  !
+ !
+!
+vrf global
+!
+vrf mgmt
+!
+router ospf 1 vrf global
+ router-id 10.255.255.9
+ area 0
+  interface l3-OSPF-DEPOSITO
+   cost 20
+   network-type point-to-point
+  !
+  interface l3-OSPF-TAQUARI
+   network-type point-to-point
+  !
+  interface l3-OSPF_DEPOSITO_NORTE
+   cost 40
+   network-type point-to-point
+  !
+  interface loopback-0
+  !
+ !
+!
+license mpls enabled
+license mpls key ***
+remote-devices
+ interface gigabit-ethernet-1/1/1
+ !
+ interface gigabit-ethernet-1/1/2
+ !
+ interface gigabit-ethernet-1/1/3
+ !
+ interface gigabit-ethernet-1/1/4
+ !
+ interface gigabit-ethernet-1/1/5
+ !
+ interface gigabit-ethernet-1/1/6
+ !
+ interface gigabit-ethernet-1/1/7
+ !
+ interface gigabit-ethernet-1/1/8
+ !
+ interface ten-gigabit-ethernet-1/1/1
+ !
+ interface ten-gigabit-ethernet-1/1/2
+ !
+ interface ten-gigabit-ethernet-1/1/3
+ !
+ interface ten-gigabit-ethernet-1/1/4
+ !
+!
+sw01_corteva# 

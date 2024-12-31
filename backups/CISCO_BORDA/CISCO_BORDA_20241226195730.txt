@@ -1,0 +1,1982 @@
+Building configuration...
+
+Current configuration : 59354 bytes
+!
+! Last configuration change at 08:41:49 UTC Tue Dec 24 2024 by antonio.idc
+! NVRAM config last updated at 08:34:11 UTC Mon Sep 30 2024
+!
+version 16.9
+service timestamps debug datetime msec
+service timestamps log datetime localtime
+service password-encryption
+service internal
+service call-home
+service unsupported-transceiver
+platform qfp utilization monitor load 80
+no platform punt-keepalive disable-kernel-core
+platform hardware throughput level 20000000
+!
+hostname VCNetwork
+!
+boot-start-marker
+boot-end-marker
+!
+!
+          vrf definition Mgmt-intf
+ !
+ address-family ipv4
+ exit-address-family
+ !
+ address-family ipv6
+ exit-address-family
+!
+vrf definition bloqueio
+ !
+ address-family ipv4
+ exit-address-family
+!
+enable password 7 06215A781B1C5B39
+!
+aaa new-model
+aaa local authentication default authorization default
+!
+aaa user profile RADIUS
+aaa user profile sgp
+aaa user profile kirk.idc
+!
+aaa group server radius RADIUS-PPPOE
+           server name vcsgp
+!
+aaa authentication login default local group ldap group RADIUS-PPPOE group radius
+aaa authentication login PPPoE local group RADIUS-PPPOE group radius
+aaa authentication ppp default group RADIUS-PPPOE group STF
+aaa authorization console
+aaa authorization config-commands
+aaa authorization exec default local group radius group ldap group RADIUS-PPPOE 
+aaa authorization network default group RADIUS-PPPOE group radius 
+aaa authorization configuration v6_PD group RADIUS-PPPOE 
+aaa authorization configuration PPPoE group RADIUS-PPPOE 
+aaa authorization configuration PPPoE_STF group STF 
+aaa accounting send counters ipv6
+aaa accounting delay-start all
+aaa accounting delay-start extended-delay 2
+aaa accounting session-duration ntp-adjusted
+aaa accounting update newinfo periodic 5
+aaa accounting include auth-profile framed-ip-address
+aaa accounting include auth-profile framed-ipv6-prefix
+aaa accounting include auth-profile delegated-ipv6-prefix
+aaa accounting network default start-stop group RADIUS-PPPOE group radius
+aaa accounting system default start-stop group radius group tacacs+ group ldap group RADIUS-PPPOE
+          !
+!
+aaa attribute list RADIUS
+!
+aaa attribute list kirk.idc
+!
+!
+!
+!
+aaa server radius dynamic-author
+ client 177.52.36.236 server-key 7 1401112B02013E0B372F23
+ port 3799
+ auth-type any
+ ignore session-key
+ ignore server-key
+!
+aaa session-id common
+clock timezone UTC -3 0
+call-home
+ ! If contact email address in call-home is configured as sch-smart-licensing@cisco.com
+ ! the email address configured in Cisco Smart License Portal will be used as contact email address to send SCH notifications.
+           contact-email-addr sch-smart-licensing@cisco.com
+ profile "CiscoTAC-1"
+  active
+  destination transport-method http
+  no destination transport-method email
+!
+!
+!
+!
+!
+!
+!
+!
+ip nbar http-services
+!
+!
+!
+ip host tools.cisco.com 173.37.145.8
+ip name-server 8.8.8.8 177.52.216.5 177.52.216.6 8.8.4.4
+!
+!
+!
+login on-success log
+          !
+!
+!
+!
+!
+!
+!
+subscriber access pppoe pre-authorize nas-port-id default send username
+subscriber templating
+! 
+! 
+! 
+! 
+!
+ipv6 flowset
+ipv6 unicast-routing
+ipv6 dhcp binding track ppp
+ipv6 dhcp pool aviso_bloqueio_ipv6
+ prefix-delegation pool pool_aviso_bloqueio_ipv6 lifetime 1800 600
+ accounting pppoe-auth
+!
+ipv6 dhcp pool dhcpv6
+ prefix-delegation pool dhcpv6-pool1 lifetime 1800 600
+           dns-server 2804:3F94::5
+ dns-server 2804:3F94::6
+ domain-name vcnetwork.com.br
+ accounting pppoe-auth
+!
+!
+!
+multilink bundle-name authenticated
+!
+!
+!
+!
+!
+!
+!
+!
+crypto pki trustpoint TP-self-signed-2684829142
+ enrollment selfsigned
+ subject-name cn=IOS-Self-Signed-Certificate-2684829142
+ revocation-check none
+ rsakeypair TP-self-signed-2684829142
+!
+crypto pki trustpoint SLA-TrustPoint
+           enrollment terminal
+ revocation-check crl
+!
+!
+crypto pki certificate chain TP-self-signed-2684829142
+ certificate self-signed 01
+  30820330 30820218 A0030201 02020101 300D0609 2A864886 F70D0101 05050030 
+  31312F30 2D060355 04031326 494F532D 53656C66 2D536967 6E65642D 43657274 
+  69666963 6174652D 32363834 38323931 3432301E 170D3231 30313036 31393339 
+  34395A17 0D333030 31303130 30303030 305A3031 312F302D 06035504 03132649 
+  4F532D53 656C662D 5369676E 65642D43 65727469 66696361 74652D32 36383438 
+  32393134 32308201 22300D06 092A8648 86F70D01 01010500 0382010F 00308201 
+  0A028201 0100C273 33BF9CA6 4692D279 BC043CA7 B61C67A2 11612DEB 93187126 
+  C6CE9CA3 B342946F DBB40ECD CB215CBA 66D6949D 7DCE219B B5D0D6BA 3BF9B8BD 
+  30D36ADE 9D89C905 63256747 02602D79 E86C3EE6 69AE1F62 0A26F046 290060D2 
+  F7E6FA81 C1BA6C6C 94085577 2DBFD8A1 8BE6145F 4A246FC9 991667D1 26653EF0 
+  27A86F4E F9222F0A BDE467E0 35F126DD EFC35B2D 4BA81264 ED040BD8 CEE16D3B 
+  3D414755 2C74DA32 20F84CCB 6E3CDC47 9AC6D0CD 8655E74B 862B8E1D 6A390E26 
+  AAADDBE0 CC657348 E2C5AEF6 7A5F62EA A73F074B AF090C96 DC01412D F28BB130 
+  89483EB8 34682A82 A13F92A6 5D2FCA81 64AB6535 EE2BB4E6 F2D92761 185CF44C 
+  B54AB431 575D0203 010001A3 53305130 0F060355 1D130101 FF040530 030101FF 
+  301F0603 551D2304 18301680 14440627 A4F4159B 9C961E5A 7C026490 706A38F8 
+  BA301D06 03551D0E 04160414 440627A4 F4159B9C 961E5A7C 02649070 6A38F8BA 
+            300D0609 2A864886 F70D0101 05050003 82010100 B2F8E157 5D4D8CA5 344C8D20 
+  00E1C93E 833957DF 5B6280FB 95C24814 64E930E2 3155D287 9452547D 622A1F74 
+  ACF7B9B0 9DAFA90D 5E329F84 3E6BF8B3 323BC3DB 5A0B9CBB 6915E3C4 0DF71118 
+  E3DA8AEE C2FF1D60 3A8536D2 121C0AEF E8E308D1 90441AC0 95E2763D 5FD5B64B 
+  0DA838EB 41E4B965 DBC68BBE 40719A3C E6734EF1 70E60847 81511403 BDDF1D62 
+  63712D50 1BBB55F3 F22A2388 54251DD8 AB0D9057 CC694590 BBA72347 034BBEB8 
+  E2C04BA8 836A01D3 C7E160B5 DF6E72E0 D0FC1845 A17E4CF5 C2F043C0 F8002E51 
+  DDBBA03F 193954DA 61188DEB 136C5735 6CAF50FD FBE43CAA 3A98D39E 8F369817 
+  493FAF5C 2F3938D4 2DDCBE4B 958BBC16 118482E8
+  	quit
+crypto pki certificate chain SLA-TrustPoint
+ certificate ca 01
+  30820321 30820209 A0030201 02020101 300D0609 2A864886 F70D0101 0B050030 
+  32310E30 0C060355 040A1305 43697363 6F312030 1E060355 04031317 43697363 
+  6F204C69 63656E73 696E6720 526F6F74 20434130 1E170D31 33303533 30313934 
+  3834375A 170D3338 30353330 31393438 34375A30 32310E30 0C060355 040A1305 
+  43697363 6F312030 1E060355 04031317 43697363 6F204C69 63656E73 696E6720 
+  526F6F74 20434130 82012230 0D06092A 864886F7 0D010101 05000382 010F0030 
+  82010A02 82010100 A6BCBD96 131E05F7 145EA72C 2CD686E6 17222EA1 F1EFF64D 
+  CBB4C798 212AA147 C655D8D7 9471380D 8711441E 1AAF071A 9CAE6388 8A38E520 
+  1C394D78 462EF239 C659F715 B98C0A59 5BBB5CBD 0CFEBEA3 700A8BF7 D8F256EE 
+  4AA4E80D DB6FD1C9 60B1FD18 FFC69C96 6FA68957 A2617DE7 104FDC5F EA2956AC 
+  7390A3EB 2B5436AD C847A2C5 DAB553EB 69A9A535 58E9F3E3 C0BD23CF 58BD7188 
+            68E69491 20F320E7 948E71D7 AE3BCC84 F10684C7 4BC8E00F 539BA42B 42C68BB7 
+  C7479096 B4CB2D62 EA2F505D C7B062A4 6811D95B E8250FC4 5D5D5FB8 8F27D191 
+  C55F0D76 61F9A4CD 3D992327 A8BB03BD 4E6D7069 7CBADF8B DF5F4368 95135E44 
+  DFC7C6CF 04DD7FD1 02030100 01A34230 40300E06 03551D0F 0101FF04 04030201 
+  06300F06 03551D13 0101FF04 05300301 01FF301D 0603551D 0E041604 1449DC85 
+  4B3D31E5 1B3E6A17 606AF333 3D3B4C73 E8300D06 092A8648 86F70D01 010B0500 
+  03820101 00507F24 D3932A66 86025D9F E838AE5C 6D4DF6B0 49631C78 240DA905 
+  604EDCDE FF4FED2B 77FC460E CD636FDB DD44681E 3A5673AB 9093D3B1 6C9E3D8B 
+  D98987BF E40CBD9E 1AECA0C2 2189BB5C 8FA85686 CD98B646 5575B146 8DFC66A8 
+  467A3DF4 4D565700 6ADF0F0D CF835015 3C04FF7C 21E878AC 11BA9CD2 55A9232C 
+  7CA7B7E6 C1AF74F6 152E99B7 B1FCF9BB E973DE7F 5BDDEB86 C71E3B49 1765308B 
+  5FB0DA06 B92AFE7F 494E8A9E 07B85737 F3A58BE1 1A48A229 C37C1E69 39F08678 
+  80DDCD16 D6BACECA EEBC7CF9 8428787B 35202CDC 60E4616A B623CDBD 230E3AFB 
+  418616A9 4093E049 4D10AB75 27E86F73 932E35B5 8862FDAE 0275156F 719BB2F0 
+  D697DF7F 28
+  	quit
+!
+crypto pki certificate pool
+ cabundle nvram:ios_core.p7b
+!
+license udi pid ASR1001-X sn JAE244705CM
+license accept end user agreement
+license boot level advipservices
+          license smart enable
+!
+spanning-tree extend system-id
+diagnostic bootup level minimal
+hw-module subslot 0/0 recovery enable timer-value 232
+dot1x system-auth-control
+!
+!
+!
+username cisco_support privilege 15 secret 8 $8$8FFjeaYqhISdRN$rDtENmZ.hrbtjoQDhVQy8ypsnMAvPhDby5p5wX1rNWE
+user-name kirk.idc
+ creation-time 1609962601
+ privilege 15
+ password 7 020F005804141F016C1C594B55
+user-name idcorp
+ creation-time 1642624866
+ privilege 15
+ password 7 141E162B2C567A7976
+user-name antonio.idc
+ creation-time 1643321795
+ privilege 15
+ password 7 0502020C2E5E5E29395747405B
+          user-name ronaldo
+ creation-time 1643479785
+ privilege 15
+ password 7 06575D727B411B32544541
+user-name sgp
+ creation-time 1722371582
+ privilege 15
+ password 7 045A02005624495E5F3B041E110E090C3F
+user-name ricardo.idx
+ creation-time 1726083887
+ privilege 15
+ password 7 0215140C003345731C1C5D39
+!
+redundancy
+ mode none
+!
+!
+!
+!
+!
+!
+cdp run
+!
+          class-map match-all vlan81
+ match vlan  81
+class-map match-all vlan700Down
+ match vlan  700
+ match class-map class-default
+class-map match-all vlan400
+ match vlan  400
+ match class-map class-default
+class-map match-all vlan711
+ match vlan  711
+ match class-map class-default
+class-map match-all vlan700
+ match vlan  700
+ match class-map class-default
+class-map match-all 50M
+ match vlan  701
+ match class-map class-default
+class-map match-all 25M
+ match vlan  703
+ match vlan  704
+ match class-map class-default
+class-map match-all 60M
+ match vlan  41
+           match vlan  42
+ match class-map class-default
+!
+policy-map vlan700-limit
+ class vlan700
+  police cir 700000000 bc 70000000
+   exceed-action drop 
+policy-map OUT-PADRAO
+ class class-default
+  police cir 2000000000
+   conform-action transmit 
+   exceed-action drop 
+policy-map 25M
+ class 25M
+  police cir 25000000 bc 25000000
+   exceed-action drop 
+policy-map vlan700Down-limit
+ class vlan700
+  police cir 700000000 bc 70000000
+   exceed-action drop 
+policy-map vlan81-limit
+ class vlan81
+  police cir 12000000 bc 1200000
+             exceed-action drop 
+policy-map IN-PADRAO
+ class class-default
+  police cir 2000000000
+   conform-action transmit 
+   exceed-action drop 
+policy-map 50M
+ class 50M
+  police cir 50000000 bc 50000000
+   exceed-action drop 
+policy-map 60M
+ class 60M
+  police cir 60000000 bc 60000
+   exceed-action drop 
+   violate-action drop 
+policy-map vlan704-30Mega
+policy-map vlan400-100M
+ class vlan400
+  police cir 100000000 bc 1000000
+   exceed-action drop 
+policy-map vlan711-limit
+ class vlan711
+  police cir 1000000000 bc 10000000
+          !
+!
+gw-accounting aaa
+!
+! 
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+! 
+! 
+bba-group pppoe global
+ virtual-template 10
+ sessions max limit 6000
+ ac name PPPoE
+ sessions per-mac limit 1
+ sessions per-vlan limit 5000
+           sessions auto cleanup
+!
+bba-group pppoe testev6
+ virtual-template 11
+ sessions per-mac limit 1
+ sessions per-vlan limit 5000
+ sessions auto cleanup
+!
+bba-group pppoe santa-fe
+ virtual-template 12
+ sessions per-mac limit 1
+ sessions per-vlan limit 5000
+ sessions auto cleanup
+!
+!
+!
+interface Null0
+ no ip unreachables
+!
+interface Loopback0
+ description default
+ ip address 10.0.0.1 255.255.255.255
+!
+          interface Loopback2
+ ip address 177.52.218.1 255.255.255.255
+ ipv6 enable
+!
+interface Loopback4
+ no ip address
+!
+interface Loopback10
+ no ip address
+!
+interface TenGigabitEthernet0/0/0
+ description LINKS
+ no ip address
+ cdp enable
+ spanning-tree portfast disable
+ service instance 80 ethernet
+  encapsulation dot1q 80 etype pppoe-all
+  rewrite ingress tag pop 1 symmetric
+  bridge-domain 80
+ !
+!
+interface TenGigabitEthernet0/0/0.330
+ description LINK-NORTE
+           encapsulation dot1Q 330
+ ip address 100.76.252.50 255.255.255.252
+ ip nat outside
+ ipv6 address 2804:4D3C:400::4A/126
+ ipv6 enable
+!
+interface TenGigabitEthernet0/0/0.332
+ description LINK2-NORTE
+ encapsulation dot1Q 332
+ ip address 100.76.252.46 255.255.255.252
+ ip nat outside
+ ipv6 address 2804:4D3C:400::1AE/126
+ ipv6 enable
+!
+interface TenGigabitEthernet0/0/0.333
+ description CLI_PETRONORT
+ encapsulation dot1Q 333
+!
+interface TenGigabitEthernet0/0/0.335
+ description CDN-NORTE
+ encapsulation dot1Q 335
+ ip address 100.76.252.110 255.255.255.252
+ ip nat outside
+           ipv6 address 2804:4D3C:400::5E/126
+ ipv6 enable
+ service-policy input 25M
+ service-policy output 25M
+!
+interface TenGigabitEthernet0/0/0.336
+ description CORTEVA-A4-2_GW-GNT
+ encapsulation dot1Q 336
+ ip address 10.12.1.17 255.255.255.252 secondary
+ ip address 10.2.0.53 255.255.255.252
+ ipv6 address 2804:40F8:0:1::2/126
+!
+interface TenGigabitEthernet0/0/0.337
+ description LINK_IDX
+ encapsulation dot1Q 337
+ ip address 172.16.28.2 255.255.255.252
+ ip nat outside
+ ipv6 address 2804:3F94:2624:52:2659:95:0:1/126
+ ipv6 address 2804:5E84:0:1::1/127
+!
+interface TenGigabitEthernet0/0/0.611
+ description IMF_VC
+ encapsulation dot1Q 611
+           ip address 10.2.0.129 255.255.255.252
+!
+interface TenGigabitEthernet0/0/0.2005
+ description LINK-IMF
+ encapsulation dot1Q 2005
+ ip address 191.241.21.238 255.255.255.252
+ ip nat outside
+ shutdown
+ ipv6 address 2804:1398:C000::9/127
+ ipv6 enable
+!
+interface TenGigabitEthernet0/0/1
+ description REDE
+ no ip address
+ cdp enable
+ spanning-tree portfast disable
+ service instance 80 ethernet
+  encapsulation dot1q 80 etype pppoe-all
+  rewrite ingress tag pop 1 symmetric
+  bridge-domain 80
+ !
+!
+interface TenGigabitEthernet0/0/1.10
+           description EXPEREON
+ encapsulation dot1Q 10
+ ip address 177.52.216.185 255.255.255.252
+ ipv6 enable
+!
+interface TenGigabitEthernet0/0/1.11
+ description VMWARE-PUBLICO
+ encapsulation dot1Q 11
+ ip address 177.52.218.5 255.255.255.252 secondary
+ ip address 10.10.10.1 255.255.255.0 secondary
+ ip address 10.12.0.101 255.255.255.252 secondary
+ ip address 177.52.216.33 255.255.255.248 secondary
+ ip address 172.16.25.1 255.255.255.252 secondary
+ ip address 177.52.216.1 255.255.255.240
+ ipv6 address 2804:3F94::1/120
+ ipv6 enable
+!
+interface TenGigabitEthernet0/0/1.20
+ description EPON-CENTRO
+ encapsulation dot1Q 20
+ ip address 177.52.217.49 255.255.255.252 secondary
+ ip address 172.31.0.101 255.255.255.252
+ pppoe enable group global
+          !
+interface TenGigabitEthernet0/0/1.21
+ description SPOT-TV
+ encapsulation dot1Q 21
+ pppoe enable group global
+!
+interface TenGigabitEthernet0/0/1.22
+ description SIGNAL-UP
+ encapsulation dot1Q 22
+ ip address 177.52.216.21 255.255.255.252
+!
+interface TenGigabitEthernet0/0/1.25
+ description CGNAT-PPPOE
+ encapsulation dot1Q 25
+ ip address 177.52.216.57 255.255.255.248
+!
+interface TenGigabitEthernet0/0/1.30
+ description FERROVIA
+ encapsulation dot1Q 30
+ ip address 177.52.217.21 255.255.255.252 secondary
+ ip address 100.64.0.33 255.255.255.240 secondary
+ ip address 100.64.5.1 255.255.255.0 secondary
+ ip address 177.52.217.13 255.255.255.252 secondary
+           ip address 10.2.0.57 255.255.255.252 secondary
+ ip address 10.2.0.73 255.255.255.252 secondary
+ ip address 10.2.0.85 255.255.255.252 secondary
+ ip address 10.2.0.89 255.255.255.252 secondary
+ ip address 177.52.217.37 255.255.255.252 secondary
+ ip address 10.2.0.97 255.255.255.252 secondary
+ ip address 10.255.255.43 255.255.255.254 secondary
+ ip address 10.2.0.49 255.255.255.252 secondary
+ ip address 10.2.0.80 255.255.255.254
+ pppoe enable group global
+!
+interface TenGigabitEthernet0/0/1.31
+ description FERROVIA
+ encapsulation dot1Q 31
+ pppoe enable group global
+!
+interface TenGigabitEthernet0/0/1.32
+ description FERROVIA
+ encapsulation dot1Q 32
+ pppoe enable group global
+!
+interface TenGigabitEthernet0/0/1.33
+ description FERROVIA
+           encapsulation dot1Q 33
+ pppoe enable group global
+!
+interface TenGigabitEthernet0/0/1.34
+ description FERROVIA
+ encapsulation dot1Q 34
+ pppoe enable group global
+!
+interface TenGigabitEthernet0/0/1.35
+ description FERROVIA
+ encapsulation dot1Q 35
+ ip address 10.2.0.137 255.255.255.248
+ pppoe enable group global
+!
+interface TenGigabitEthernet0/0/1.36
+ description FERROVIA
+ encapsulation dot1Q 36
+ pppoe enable group global
+!
+interface TenGigabitEthernet0/0/1.37
+ description FERROVIA
+ encapsulation dot1Q 37
+ pppoe enable group global
+          !
+interface TenGigabitEthernet0/0/1.38
+ description FERROVIA
+ encapsulation dot1Q 38
+ pppoe enable group global
+!
+interface TenGigabitEthernet0/0/1.39
+ description FERROVIA
+ encapsulation dot1Q 39
+ pppoe enable group global
+!
+interface TenGigabitEthernet0/0/1.40
+ description POP-LUZIMANGUES
+ encapsulation dot1Q 40
+ ip address 10.1.3.1 255.255.255.0
+ pppoe enable group global
+!
+interface TenGigabitEthernet0/0/1.41
+ description DEPO-EXP
+ encapsulation dot1Q 41
+ ip address 10.2.0.65 255.255.255.252
+ pppoe enable group global
+ service-policy input 60M
+           service-policy output 60M
+!
+interface TenGigabitEthernet0/0/1.42
+ description DEPO-EXP
+ encapsulation dot1Q 42
+ ip address 10.2.0.69 255.255.255.252
+ pppoe enable group global
+ service-policy input 60M
+ service-policy output 60M
+!
+interface TenGigabitEthernet0/0/1.50
+ description OLT-ZTE-LUZIMANGUES
+ encapsulation dot1Q 50
+ pppoe enable group global
+!
+interface TenGigabitEthernet0/0/1.60
+ description OLT-ZTE-TAQUARI
+ encapsulation dot1Q 60
+ ip address 10.12.1.45 255.255.255.252
+ pppoe enable group global
+!
+interface TenGigabitEthernet0/0/1.65
+ description PPPoE_ZTE_COLINA
+           encapsulation dot1Q 65
+ pppoe enable group global
+!
+interface TenGigabitEthernet0/0/1.70
+ description PPPoE_SANTA-FE
+ encapsulation dot1Q 70
+ pppoe enable group global
+!
+interface TenGigabitEthernet0/0/1.71
+ description PPPoE_PRATA_71
+ encapsulation dot1Q 71
+ ip address 10.21.6.1 255.255.255.252
+ ip ospf network point-to-point
+ ip ospf 1 area 0
+ pppoe enable group global
+!
+interface TenGigabitEthernet0/0/1.80
+ description OLT-COLINA
+ encapsulation dot1Q 80
+ pppoe enable group global
+!
+interface TenGigabitEthernet0/0/1.81
+ description OLT-COLINA_CLI
+           encapsulation dot1Q 81
+ ip address 177.52.217.53 255.255.255.252
+ service-policy input vlan81-limit
+ service-policy output vlan81-limit
+!
+interface TenGigabitEthernet0/0/1.90
+ description PPPoE_DEPOSITO_GPON
+ encapsulation dot1Q 90
+ pppoe enable group global
+!
+interface TenGigabitEthernet0/0/1.91
+ description PPPoE_DEPOSITO_EPON
+ encapsulation dot1Q 91
+ pppoe enable group global
+!
+interface TenGigabitEthernet0/0/1.98
+ description GERENCIA_DATACOM
+ encapsulation dot1Q 98
+ ip address 10.1.2.1 255.255.255.252
+!
+interface TenGigabitEthernet0/0/1.99
+ description GERENCIA
+ encapsulation dot1Q 99
+           ip address 177.52.218.13 255.255.255.252 secondary
+ ip address 177.52.218.9 255.255.255.252 secondary
+ ip address 10.1.1.1 255.255.255.0
+ pppoe enable group testev6
+ ipv6 enable
+!
+interface TenGigabitEthernet0/0/1.106
+ description SWITCH-CORE
+ encapsulation dot1Q 106
+ ip address 10.20.20.255 255.255.255.254
+ ip ospf network point-to-point
+ ip ospf 1 area 0
+!
+interface TenGigabitEthernet0/0/1.200
+ description GLAUBER-IDCORP
+ encapsulation dot1Q 200
+ pppoe enable group global
+!
+interface TenGigabitEthernet0/0/1.225
+ description EVENTO_COLINA
+ encapsulation dot1Q 225
+ ip address 10.2.0.149 255.255.255.252
+ pppoe enable group global
+          !
+interface TenGigabitEthernet0/0/1.226
+ description AGORATELECOM
+ encapsulation dot1Q 226
+ ip address 10.2.0.145 255.255.255.252
+!
+interface TenGigabitEthernet0/0/1.333
+ description PETRO-NORTE_TRANSPo
+ encapsulation dot1Q 333
+ ip address 10.2.0.1 255.255.255.252 secondary
+ ip address 10.2.0.93 255.255.255.252
+ pppoe enable group global
+!
+interface TenGigabitEthernet0/0/1.397
+ description CAMERA-ALARME-POP-NORTE
+ encapsulation dot1Q 397
+ pppoe enable group global
+!
+interface TenGigabitEthernet0/0/1.398
+ description PPPoE-ESCRITORIO
+ encapsulation dot1Q 398
+ pppoe enable group global
+!
+          interface TenGigabitEthernet0/0/1.399
+ description SWT-CORE-24-PPPoE
+ encapsulation dot1Q 399
+ pppoe enable group global
+!
+interface TenGigabitEthernet0/0/1.400
+ description POLINESIA
+ encapsulation dot1Q 400
+ pppoe enable group global
+!
+interface TenGigabitEthernet0/0/1.401
+ description PPPoE-DEPOSITO
+ encapsulation dot1Q 401
+ pppoe enable group global
+!
+interface TenGigabitEthernet0/0/1.402
+ description PPPoE-DEPOSITO
+ encapsulation dot1Q 402
+ pppoe enable group global
+!
+interface TenGigabitEthernet0/0/1.403
+ description PPPoE-DEPOSITO
+ encapsulation dot1Q 403
+           pppoe enable group global
+!
+interface TenGigabitEthernet0/0/1.404
+ description PPPoE-DEPOSITO
+ encapsulation dot1Q 404
+ pppoe enable group global
+!
+interface TenGigabitEthernet0/0/1.405
+ description PPPoE-DEPOSITO
+ encapsulation dot1Q 405
+ pppoe enable group global
+!
+interface TenGigabitEthernet0/0/1.406
+ description PPPoE-DEPOSITO
+ encapsulation dot1Q 406
+ pppoe enable group global
+!
+interface TenGigabitEthernet0/0/1.407
+ description PPPoE-DEPOSITO
+ encapsulation dot1Q 407
+ pppoe enable group global
+!
+interface TenGigabitEthernet0/0/1.410
+           description PPPoE-DEPOSITO
+ encapsulation dot1Q 410
+ ip address 10.2.0.77 255.255.255.252
+ pppoe enable group global
+!
+interface TenGigabitEthernet0/0/1.411
+ description POLINESIA PORTARIA
+ encapsulation dot1Q 411
+ pppoe enable group global
+!
+interface TenGigabitEthernet0/0/1.412
+ description PPPoE-DEPOSITO
+ encapsulation dot1Q 412
+ ip address 177.52.217.81 255.255.255.252
+ pppoe enable group global
+!
+interface TenGigabitEthernet0/0/1.413
+ description PPPoE-DEPOSITO
+ encapsulation dot1Q 413
+ pppoe enable group global
+!
+interface TenGigabitEthernet0/0/1.414
+ description PPPoE-DEPOSITO
+           encapsulation dot1Q 414
+ pppoe enable group global
+!
+interface TenGigabitEthernet0/0/1.415
+ description POLINESIA
+ encapsulation dot1Q 415
+ pppoe enable group global
+!
+interface TenGigabitEthernet0/0/1.416
+ description PPPoE-DEPOSITO
+ encapsulation dot1Q 416
+ pppoe enable group global
+!
+interface TenGigabitEthernet0/0/1.417
+ description PPPoE-DEPOSITO
+ encapsulation dot1Q 417
+ pppoe enable group global
+!
+interface TenGigabitEthernet0/0/1.421
+ description TAQUARI-OLT-ZTE
+ encapsulation dot1Q 421
+ pppoe enable group global
+!
+          interface TenGigabitEthernet0/0/1.422
+ description TAQUARI-OLT-ZTE
+ encapsulation dot1Q 422
+ pppoe enable group global
+!
+interface TenGigabitEthernet0/0/1.423
+ description TAQUARI-OLT-ZTE
+ encapsulation dot1Q 423
+ pppoe enable group global
+!
+interface TenGigabitEthernet0/0/1.424
+ description TAQUARI-OLT-ZTE
+ encapsulation dot1Q 424
+ pppoe enable group global
+!
+interface TenGigabitEthernet0/0/1.425
+ description TAQUARI-OLT-ZTE
+ encapsulation dot1Q 425
+ pppoe enable group global
+!
+interface TenGigabitEthernet0/0/1.426
+ description TAQUARI-OLT-ZTE
+ encapsulation dot1Q 426
+           pppoe enable group global
+!
+interface TenGigabitEthernet0/0/1.427
+ description TAQUARI-OLT-ZTE
+ encapsulation dot1Q 427
+ pppoe enable group global
+!
+interface TenGigabitEthernet0/0/1.428
+ description TAQUARI-OLT-ZTE
+ encapsulation dot1Q 428
+ pppoe enable group global
+!
+interface TenGigabitEthernet0/0/1.429
+ description TAQUARI-OLT-ZTE
+ encapsulation dot1Q 429
+ pppoe enable group global
+!
+interface TenGigabitEthernet0/0/1.430
+ description TAQUARI-OLT-ZTE
+ encapsulation dot1Q 430
+ pppoe enable group global
+!
+interface TenGigabitEthernet0/0/1.431
+           description TAQUARI-OLT-ZTE
+ encapsulation dot1Q 431
+ pppoe enable group global
+!
+interface TenGigabitEthernet0/0/1.432
+ description TAQUARI-OLT-ZTE
+ encapsulation dot1Q 432
+ pppoe enable group global
+!
+interface TenGigabitEthernet0/0/1.433
+ description TAQUARI-OLT-ZTE
+ encapsulation dot1Q 433
+ pppoe enable group global
+!
+interface TenGigabitEthernet0/0/1.434
+ description TAQUARI-OLT-ZTE
+ encapsulation dot1Q 434
+ pppoe enable group global
+!
+interface TenGigabitEthernet0/0/1.435
+ description TAQUARI-OLT-ZTE
+ encapsulation dot1Q 435
+ pppoe enable group global
+          !
+interface TenGigabitEthernet0/0/1.436
+ description TAQUARI-OLT-ZTE
+ encapsulation dot1Q 436
+ pppoe enable group global
+!
+interface TenGigabitEthernet0/0/1.437
+ description TAQUARI-OLT-ZTE
+ encapsulation dot1Q 437
+ pppoe enable group global
+!
+interface TenGigabitEthernet0/0/1.438
+ description TAQUARI-OLT-ZTE
+ encapsulation dot1Q 438
+ pppoe enable group global
+!
+interface TenGigabitEthernet0/0/1.500
+ description GerenciaFiberHome
+ encapsulation dot1Q 500
+ ip address 10.1.12.33 255.255.255.252
+!
+interface TenGigabitEthernet0/0/1.501
+ description PPPoE-DEPOSITO
+           encapsulation dot1Q 501
+ pppoe enable group global
+!
+interface TenGigabitEthernet0/0/1.502
+ description PPPoE-DEPOSITO
+ encapsulation dot1Q 502
+ pppoe enable group global
+!
+interface TenGigabitEthernet0/0/1.503
+ description PPPoE-DEPOSITO
+ encapsulation dot1Q 503
+ pppoe enable group global
+!
+interface TenGigabitEthernet0/0/1.504
+ description PPPoE-DEPOSITO
+ encapsulation dot1Q 504
+ pppoe enable group global
+!
+interface TenGigabitEthernet0/0/1.505
+ description PPPoE-DEPOSITO
+ encapsulation dot1Q 505
+ pppoe enable group global
+!
+          interface TenGigabitEthernet0/0/1.506
+ description PPPoE-DEPOSITO
+ encapsulation dot1Q 506
+ ip address 10.2.0.61 255.255.255.252
+ pppoe enable group global
+!
+interface TenGigabitEthernet0/0/1.507
+ description PPPoE-DEPOSITO
+ encapsulation dot1Q 507
+ pppoe enable group testev6
+ ipv6 enable
+!
+interface TenGigabitEthernet0/0/1.508
+ description PPPoE-DEPOSITO
+ encapsulation dot1Q 508
+ pppoe enable group global
+!
+interface TenGigabitEthernet0/0/1.509
+ description TAQUARI-OLT-ZTE
+ encapsulation dot1Q 509
+ pppoe enable group global
+!
+interface TenGigabitEthernet0/0/1.510
+           description TAQUARI-OLT-ZTE
+ encapsulation dot1Q 510
+ pppoe enable group global
+!
+interface TenGigabitEthernet0/0/1.511
+ description TAQUARI-OLT-ZTE
+ encapsulation dot1Q 511
+ pppoe enable group global
+!
+interface TenGigabitEthernet0/0/1.512
+ description TAQUARI-OLT-ZTE
+ encapsulation dot1Q 512
+ pppoe enable group global
+!
+interface TenGigabitEthernet0/0/1.513
+ description TAQUARI-OLT-ZTE
+ encapsulation dot1Q 513
+ pppoe enable group global
+!
+interface TenGigabitEthernet0/0/1.514
+ description UNITINS-VILA-AGROTINS
+ encapsulation dot1Q 514
+ ip address 192.168.251.1 255.255.255.252
+           pppoe enable group global
+!
+interface TenGigabitEthernet0/0/1.515
+ description TAQUARI-OLT-ZTE
+ encapsulation dot1Q 515
+ pppoe enable group global
+!
+interface TenGigabitEthernet0/0/1.516
+ description TAQUARI-OLT-ZTE
+ encapsulation dot1Q 516
+ pppoe enable group global
+!
+interface TenGigabitEthernet0/0/1.517
+ description TAQUARI-OLT-ZTE
+ encapsulation dot1Q 517
+ pppoe enable group global
+!
+interface TenGigabitEthernet0/0/1.518
+ description TAQUARI-OLT-ZTE
+ encapsulation dot1Q 518
+ pppoe enable group global
+!
+interface TenGigabitEthernet0/0/1.519
+           description TAQUARI-OLT-ZTE
+ encapsulation dot1Q 519
+ pppoe enable group global
+!
+interface TenGigabitEthernet0/0/1.520
+ description TAQUARI-OLT-ZTE
+ encapsulation dot1Q 520
+ pppoe enable group global
+!
+interface TenGigabitEthernet0/0/1.521
+ description TAQUARI-OLT-ZTE
+ encapsulation dot1Q 521
+ pppoe enable group global
+!
+interface TenGigabitEthernet0/0/1.522
+ description TAQUARI-OLT-ZTE
+ encapsulation dot1Q 522
+ pppoe enable group global
+!
+interface TenGigabitEthernet0/0/1.523
+ description TAQUARI-OLT-ZTE
+ encapsulation dot1Q 523
+ pppoe enable group global
+          !
+interface TenGigabitEthernet0/0/1.524
+ description TAQUARI-OLT-ZTE
+ encapsulation dot1Q 524
+ pppoe enable group global
+!
+interface TenGigabitEthernet0/0/1.525
+ description TAQUARI-OLT-FIBERHOME
+ encapsulation dot1Q 525
+ pppoe enable group global
+!
+interface TenGigabitEthernet0/0/1.526
+ description TAQUARI-OLT-ZTE
+ encapsulation dot1Q 526
+ ip address 10.8.8.1 255.255.255.252
+ pppoe enable group global
+!
+interface TenGigabitEthernet0/0/1.527
+ description TAQUARI-OLT-EPON
+ encapsulation dot1Q 527
+ pppoe enable group global
+!
+interface TenGigabitEthernet0/0/1.530
+           description LUZIMANGUES-OLT-FIBERHOME
+ encapsulation dot1Q 530
+ pppoe enable group global
+!
+interface TenGigabitEthernet0/0/1.700
+ description SIGNAL-UP
+ encapsulation dot1Q 700
+ ip address 10.2.0.29 255.255.255.252 secondary
+ ip address 10.2.0.45 255.255.255.252 secondary
+ ip address 10.2.0.9 255.255.255.252
+!
+interface TenGigabitEthernet0/0/1.701
+ description CORTEVA_A4
+ encapsulation dot1Q 701
+ ip address 10.2.0.153 255.255.255.252
+ pppoe enable group global
+ service-policy input 50M
+ service-policy output 50M
+!
+interface TenGigabitEthernet0/0/1.702
+ description CORTEVA-A5
+ encapsulation dot1Q 702
+ ip address 177.52.217.245 255.255.255.252
+          !
+interface TenGigabitEthernet0/0/1.703
+ description CORTEVA-A2-PMW
+ encapsulation dot1Q 703
+ service-policy input 25M
+ service-policy output 25M
+!
+interface TenGigabitEthernet0/0/1.704
+ description EXPEREON_A4
+ encapsulation dot1Q 704
+ ip address 177.52.217.225 255.255.255.248
+ pppoe enable group global
+!
+interface TenGigabitEthernet0/0/1.705
+ description CIBERNET
+ encapsulation dot1Q 705
+ ip address 10.2.0.33 255.255.255.248
+!
+interface TenGigabitEthernet0/0/1.707
+ description UNITINS
+ encapsulation dot1Q 707
+ ip address 100.64.3.17 255.255.255.248
+!
+          interface TenGigabitEthernet0/0/1.711
+ description GW-GNT
+ encapsulation dot1Q 711
+ ip address 177.52.216.145 255.255.255.252 secondary
+ ip address 10.2.0.13 255.255.255.252
+ service-policy input vlan711-limit
+ service-policy output vlan711-limit
+!
+interface TenGigabitEthernet0/0/1.712
+ description JTNET
+ encapsulation dot1Q 712
+ ip address 10.2.0.17 255.255.255.252
+!
+interface TenGigabitEthernet0/0/1.713
+ description Santander
+ encapsulation dot1Q 713
+ ip address 10.2.0.25 255.255.255.252
+ shutdown
+!
+interface TenGigabitEthernet0/0/1.714
+ description DhoneNet
+ encapsulation dot1Q 714
+ ip address 10.2.0.21 255.255.255.252 secondary
+           ip address 10.12.1.25 255.255.255.252
+!
+interface TenGigabitEthernet0/0/1.715
+ description IPTV
+ encapsulation dot1Q 715
+ ip address 10.13.1.1 255.255.255.252
+!
+interface TenGigabitEthernet0/0/1.716
+ description SPOT-TV
+ encapsulation dot1Q 716
+ ip address 177.52.217.121 255.255.255.252
+!
+interface TenGigabitEthernet0/0/1.718
+ description Cliente-ATEM
+ encapsulation dot1Q 718
+ ip address 10.2.0.5 255.255.255.252
+!
+interface TenGigabitEthernet0/0/1.719
+ description RoyalFic
+ encapsulation dot1Q 719
+ shutdown
+!
+interface TenGigabitEthernet0/0/1.720
+           description RED_CORTEVA
+ encapsulation dot1Q 720
+ ip address 10.12.1.49 255.255.255.252
+ ip ospf network point-to-point
+ ip ospf 1 area 0
+!
+interface TenGigabitEthernet0/0/1.887
+ description CORTEVA
+ encapsulation dot1Q 887
+ ip address 10.12.1.5 255.255.255.252
+ ip ospf network point-to-point
+ ip ospf 1 area 0
+!
+interface TenGigabitEthernet0/0/1.1309
+ description EXPEREON
+ encapsulation dot1Q 1309
+ ip address 177.52.217.5 255.255.255.252
+!
+interface TenGigabitEthernet0/0/1.2001
+ description SNT_FE
+ encapsulation dot1Q 2001
+ pppoe enable group global
+!
+          interface TenGigabitEthernet0/0/1.3535
+ description CGNAT_MK
+ encapsulation dot1Q 3535
+ ip address 10.100.102.1 255.255.255.252
+!
+interface GigabitEthernet0/0/0
+ no ip address
+ negotiation auto
+!
+interface GigabitEthernet0/0/1
+ no ip address
+ shutdown
+ negotiation auto
+!
+interface GigabitEthernet0/0/2
+ no ip address
+ shutdown
+ negotiation auto
+!
+interface GigabitEthernet0/0/3
+ no ip address
+ shutdown
+ negotiation auto
+          !
+interface GigabitEthernet0/0/4
+ no ip address
+ shutdown
+ negotiation auto
+!
+interface GigabitEthernet0/0/5
+ no ip address
+ shutdown
+ negotiation auto
+!
+interface GigabitEthernet0
+ vrf forwarding Mgmt-intf
+ ip address 192.168.0.25 255.255.255.0
+ negotiation auto
+!
+interface Virtual-Template10
+ description BRAS-VirtualTemplate
+ mtu 1492
+ ip unnumbered Loopback2
+ no ip redirects
+ no ip unreachables
+ no ip proxy-arp
+           ip nat inside
+ ip tcp adjust-mss 1452
+ no logging event link-status
+ peer default ip address pool V4-POOL-LOCAL
+ no ipv6 nd ra suppress
+ no snmp trap link-status
+ keepalive 10 3
+ ppp max-terminate 5
+ ppp max-bad-auth 10
+ ppp mtu adaptive
+ ppp disconnect-cause keepalive lost-carrier
+ ppp authentication pap chap eap ms-chap ms-chap-v2
+ ppp ipcp dns 177.52.216.5 177.52.216.6
+ ppp ipcp mask 255.255.255.255
+ ppp ipcp ignore-map
+ ppp ipcp address required
+ ppp ipcp address unique
+ ppp link reorders
+ ppp timeout authentication 100
+ service-policy input IN-PADRAO
+ service-policy output OUT-PADRAO
+ ip virtual-reassembly
+!
+          interface Virtual-Template11
+ description BRAS-VirtualTemplate
+ mtu 1492
+ ip unnumbered Loopback2
+ no ip redirects
+ no ip unreachables
+ no ip proxy-arp
+ ip nat inside
+ ip tcp adjust-mss 1452
+ no logging event link-status
+ peer default ip address pool V4-POOL-LOCAL
+ peer default ipv6 pool v6-pool1
+ ipv6 unnumbered Loopback2
+ ipv6 enable
+ ipv6 nd managed-config-flag
+ ipv6 nd other-config-flag
+ ipv6 nd router-preference High
+ no ipv6 nd ra suppress
+ ipv6 dhcp server dhcpv6
+ no snmp trap link-status
+ keepalive 20 3
+ ppp max-terminate 5
+ ppp max-bad-auth 10
+           ppp mtu adaptive
+ ppp disconnect-cause keepalive lost-carrier
+ ppp authentication pap chap eap ms-chap ms-chap-v2
+ ppp ipcp dns 177.52.216.5 177.52.216.6
+ ppp ipcp mask 255.255.255.255
+ ppp ipcp ignore-map
+ ppp ipcp address required
+ ppp ipcp address unique
+ ppp link reorders
+ ppp timeout authentication 100
+ service-policy input IN-PADRAO
+ service-policy output OUT-PADRAO
+ ip virtual-reassembly
+!
+interface Virtual-Template12
+ description BRAS-VirtualTemplate_STF
+ mtu 1492
+ ip unnumbered Loopback2
+ no ip redirects
+ no ip unreachables
+ no ip proxy-arp
+ ip nat inside
+ ip tcp adjust-mss 1452
+           no logging event link-status
+ peer default ip address pool V4-POOL-LOCAL
+ no ipv6 nd ra suppress
+ no snmp trap link-status
+ keepalive 10 3
+ ppp max-terminate 5
+ ppp max-bad-auth 10
+ ppp mtu adaptive
+ ppp disconnect-cause keepalive lost-carrier
+ ppp authentication pap chap eap ms-chap ms-chap-v2
+ ppp ipcp dns 177.52.216.5 177.52.216.6
+ ppp ipcp mask 255.255.255.255
+ ppp ipcp ignore-map
+ ppp ipcp address required
+ ppp ipcp address unique
+ ppp link reorders
+ ppp timeout authentication 100
+ service-policy input IN-PADRAO
+ service-policy output OUT-PADRAO
+ ip virtual-reassembly
+!
+router ospf 1
+ passive-interface default
+           no passive-interface TenGigabitEthernet0/0/1.25
+ no passive-interface TenGigabitEthernet0/0/1.71
+ no passive-interface TenGigabitEthernet0/0/1.106
+ no passive-interface TenGigabitEthernet0/0/1.720
+ no passive-interface TenGigabitEthernet0/0/1.887
+ network 177.52.216.60 0.0.0.3 area 0
+ default-information originate always
+!
+router bgp 262452
+ bgp router-id 177.52.216.1
+ bgp always-compare-med
+ bgp log-neighbor-changes
+ no bgp default ipv4-unicast
+ neighbor NORTE.NET-v4 peer-group
+ neighbor NORTE.NET-v4 remote-as 267420
+ neighbor NORTE.NET-v4 version 4
+ neighbor NORTE.NET-v6 peer-group
+ neighbor NORTE.NET-v6 remote-as 267420
+ neighbor NORTE.NET-v6 version 4
+ neighbor IMF-v4 peer-group
+ neighbor IMF-v4 remote-as 263541
+ neighbor IMF-v4 version 4
+ neighbor IMF-v6 peer-group
+           neighbor IMF-v6 remote-as 263541
+ neighbor IMF-v6 version 4
+ neighbor IDX-v4 peer-group
+ neighbor IDX-v4 remote-as 269038
+ neighbor IDX-v4 version 4
+ neighbor IDX-v6 peer-group
+ neighbor IDX-v6 remote-as 269038
+ neighbor IDX-v6 version 4
+ neighbor 2804:1398:C000::8 peer-group IMF-v6
+ neighbor 2804:1398:C000::8 description Route-Server1 IMF-v6
+ neighbor 2804:4D3C:400::49 peer-group NORTE.NET-v6
+ neighbor 2804:4D3C:400::49 description Route-Server1 NORTE.NET-v6
+ neighbor 2804:4D3C:400::1AD peer-group NORTE.NET-v6
+ neighbor 2804:5E84:0:1:: peer-group IMF-v6
+ neighbor 2804:5E84:0:1:: description Route-Server1 IMF-v6
+ neighbor 100.76.252.45 remote-as 267420
+ neighbor 100.76.252.45 description Route-Server2 NORTE.NET
+ neighbor 100.76.252.49 peer-group NORTE.NET-v4
+ neighbor 100.76.252.49 description Route-Server1 NORTE.NET
+ neighbor 172.16.28.1 peer-group IDX-v4
+ neighbor 172.16.28.1 description Route-Server1 IDX
+ neighbor 191.241.21.237 peer-group IMF-v4
+ neighbor 191.241.21.237 description Route-Server1 IMF
+           !
+ address-family ipv4
+  network 177.52.216.0 mask 255.255.255.0 route-map MEUS_PREFIXOS-ASN262452
+  network 177.52.216.0 mask 255.255.254.0 route-map MEUS_PREFIXOS-ASN262452-23
+  network 177.52.217.0 mask 255.255.255.0 route-map MEUS_PREFIXOS-217-ASN262452
+  network 177.52.218.0 mask 255.255.255.0 route-map MEUS_PREFIXOS-218-ASN262452
+  neighbor NORTE.NET-v4 send-community both
+  neighbor NORTE.NET-v4 next-hop-self
+  neighbor NORTE.NET-v4 soft-reconfiguration inbound
+  neighbor NORTE.NET-v4 route-map NORTE.NET-v4-in in
+  neighbor NORTE.NET-v4 route-map NORTE.NET-v4-out out
+  neighbor NORTE.NET-v6 next-hop-self
+  neighbor NORTE.NET-v6 route-map NORTE.NET-v6-in in
+  neighbor NORTE.NET-v6 route-map NORTE.NET-v6-out out
+  neighbor IMF-v4 next-hop-self
+  neighbor IMF-v4 soft-reconfiguration inbound
+  neighbor IMF-v4 route-map IMF-v4-in in
+  neighbor IMF-v4 route-map IMF-v4-out out
+  neighbor IMF-v6 next-hop-self
+  neighbor IMF-v6 route-map IMF-v6-in in
+  neighbor IMF-v6 route-map IMF-v6-out out
+  neighbor IDX-v4 next-hop-self
+  neighbor IDX-v4 soft-reconfiguration inbound
+            neighbor IDX-v4 route-map IMF-v4-in in
+  neighbor IDX-v4 route-map IMF-v4-out out
+  neighbor IDX-v6 next-hop-self
+  neighbor IDX-v6 route-map IMF-v6-in in
+  neighbor IDX-v6 route-map IMF-v6-out out
+  neighbor 100.76.252.45 activate
+  neighbor 100.76.252.45 route-map NORTE2.NET-v4-in in
+  neighbor 100.76.252.45 route-map NORTE2.NET-v4-out out
+  neighbor 100.76.252.49 activate
+  neighbor 172.16.28.1 activate
+  neighbor 191.241.21.237 activate
+ exit-address-family
+ !
+ address-family ipv6
+  network 2804:3F94::/33 route-map MEUS_PREFIXOS-ASN262452
+  neighbor NORTE.NET-v4 soft-reconfiguration inbound
+  neighbor NORTE.NET-v6 next-hop-self
+  neighbor NORTE.NET-v6 route-map NORTE.NET-v6-in in
+  neighbor NORTE.NET-v6 route-map NORTE.NET-v6-out out
+  neighbor IMF-v6 next-hop-self
+  neighbor IMF-v6 route-map IMF-v6-in in
+  neighbor IMF-v6 route-map IMF-v6-out out
+  neighbor IDX-v6 next-hop-self
+            neighbor IDX-v6 route-map IMF-v6-in in
+  neighbor IDX-v6 route-map IMF-v6-out out
+  neighbor 2804:1398:C000::8 activate
+  neighbor 2804:1398:C000::8 soft-reconfiguration inbound
+  neighbor 2804:4D3C:400::49 activate
+  neighbor 2804:4D3C:400::49 soft-reconfiguration inbound
+  neighbor 2804:4D3C:400::1AD activate
+  neighbor 2804:5E84:0:1:: activate
+  neighbor 2804:5E84:0:1:: soft-reconfiguration inbound
+ exit-address-family
+!
+ip local pool bloqueados 10.24.0.1 10.24.3.254
+ip local pool V4-POOL-LOCAL 100.65.0.0 100.65.15.126
+ip forward-protocol nd
+ip http server
+ip http authentication local
+ip http secure-server
+ip http client source-interface TenGigabitEthernet0/0/0.2002
+ip tftp source-interface GigabitEthernet0
+ip nat settings mode cgn
+no ip nat settings support mapping outside
+ip nat settings pap limit 30 bpa set-size 512 
+ip nat settings nonpatdrop
+          ip nat log translations flow-export v9 udp destination 177.52.216.8 9999 source Loopback2
+ip nat translation tcp-timeout 500
+ip nat translation udp-timeout 30
+ip nat translation finrst-timeout 30
+ip nat translation syn-timeout 30
+ip nat translation dns-timeout 30
+ip nat translation icmp-timeout 30
+ip nat translation max-entries 2147483647
+ip nat translation max-entries all-host 2048
+ip nat translation max-entries list 110 1000
+no ip nat service all-algs
+ip nat service pptp
+ip nat pool CGN_01 177.52.218.128 177.52.218.255 netmask 255.255.255.128
+ip nat inside source list 100 pool CGN_01 overload
+ip nat inside source list 110 pool CGN_01 overload
+ip nat inside source list 120 pool CGN_01 overload
+ip route 10.12.1.0 255.255.255.0 177.52.216.62 name ESCRITORIO
+ip route 10.14.1.0 255.255.255.0 177.52.216.62 name ESCRITORIO
+ip route 10.20.20.0 255.255.255.128 10.1.2.2 name GERENCIA_MPLS
+ip route 10.255.255.0 255.255.255.0 10.1.2.2 name LOOPBACK_MPLS_COLINA
+ip route 100.64.5.16 255.255.255.252 177.52.216.62 name ESCRITORIO
+ip route 172.16.10.0 255.255.255.252 177.52.216.62 name maquina_whatsapp
+          ip route 172.16.10.4 255.255.255.252 177.52.216.62 name maquina_tr069
+ip route 177.52.216.0 255.255.254.0 Null0
+ip route 177.52.216.0 255.255.255.0 Null0
+ip route 177.52.216.16 255.255.255.255 10.2.0.78 name Polinesia
+ip route 177.52.216.24 255.255.255.248 10.13.1.2 name IPTV
+ip route 177.52.216.128 255.255.255.248 10.2.0.10 name SIGNAL_UP_TAQ-NOVA
+ip route 177.52.216.136 255.255.255.248 10.2.0.14 name GW-GNT
+ip route 177.52.216.152 255.255.255.248 177.52.216.146 name GW_GNT
+ip route 177.52.216.160 255.255.255.255 10.12.1.26 name POP_SERRA
+ip route 177.52.216.161 255.255.255.255 10.2.0.10 name SIGNAL_UP_TAQ-NOVA
+ip route 177.52.216.162 255.255.255.255 10.2.0.14 name GW-GNT
+ip route 177.52.216.163 255.255.255.255 10.2.0.18 name JTNET
+ip route 177.52.216.164 255.255.255.255 10.2.0.22 name DHONENET
+ip route 177.52.216.166 255.255.255.255 10.2.0.34 name CIBERNET
+ip route 177.52.216.167 255.255.255.255 10.2.0.30 name SIGNAL_UP
+ip route 177.52.216.168 255.255.255.248 177.52.216.22
+ip route 177.52.216.176 255.255.255.252 100.68.0.1 name BANCO_DO_BRASIL
+ip route 177.52.216.176 255.255.255.252 10.2.0.62 name BANCO_DO_BRASIL
+ip route 177.52.216.180 255.255.255.252 100.68.0.2
+ip route 177.52.216.180 255.255.255.255 10.2.0.146 name AGORATELECOM
+ip route 177.52.216.181 255.255.255.255 10.2.0.150 name EVENTO_COLINA
+ip route 177.52.216.192 255.255.255.255 10.2.0.46 name SIGNAL_UP
+ip route 177.52.217.0 255.255.255.0 Null0
+          ip route 177.52.217.0 255.255.255.252 10.2.0.74 name RoyalFic
+ip route 177.52.217.16 255.255.255.255 10.2.0.2 name Router_PN
+ip route 177.52.217.17 255.255.255.255 10.2.0.6 name Cliente-ATEM
+ip route 177.52.217.18 255.255.255.255 10.2.0.26 name Router_Satnader
+ip route 177.52.217.28 255.255.255.252 10.2.0.90 name DISLUB
+ip route 177.52.217.32 255.255.255.252 10.2.0.86 name BRASNET
+ip route 177.52.217.44 255.255.255.252 10.2.0.98 name federal@vcnetwork.com.br
+ip route 177.52.217.84 255.255.255.252 10.2.0.81 name NORSHIP
+ip route 177.52.217.116 255.255.255.252 10.2.0.50 name TDC
+ip route 177.52.217.128 255.255.255.248 10.2.0.70 name EXPEREO-NORTE-FIBRA
+ip route 177.52.217.136 255.255.255.248 10.2.0.66 name EXPEREO-VLAN_41
+ip route 177.52.217.144 255.255.255.248 10.2.0.58 name ALESAT
+ip route 177.52.217.236 255.255.255.252 172.31.0.102 name Router_Corteva_A2
+ip route 177.52.217.240 255.255.255.252 10.2.0.154 name SW-CORTEVA_A4
+ip route 177.52.218.0 255.255.255.0 Null0
+ip route 177.52.218.20 255.255.255.252 10.2.0.130 name IOP_IMF
+ip route 177.52.218.82 255.255.255.255 10.100.102.2 name CGNAT_MK
+ip route 192.168.120.0 255.255.255.0 177.52.216.62
+!
+ip bgp-community new-format
+ip community-list standard NO-EXPORT permit 26245:999
+ip community-list standard ALL-EXPORT permit 26245:3000
+ip community-list standard ANUNCIA-NORTE permit 26245:1000
+          ip community-list standard ANUNCIA-NORTE+1 permit 26245:1001
+ip community-list standard ANUNCIA-NORTE+2 permit 26245:1002
+ip community-list standard ANUNCIA-NORTE+3 permit 26245:1003
+ip community-list standard NO-EXPORT-NORTE permit 26245:1099
+ip community-list standard ANUNCIA-IMF permit 26245:5000
+ip community-list standard ANUNCIA-IMF+1 permit 26245:5001
+ip community-list standard ANUNCIA-IMF+2 permit 26245:5002
+ip community-list standard ANUNCIA-IMF+3 permit 26245:5003
+ip community-list standard ANUNCIA-IMF+4 permit 26245:5004
+ip community-list standard ANUNCIA-IMF+7 permit 26245:5007
+ip community-list standard NO-EXPORT-IMF permit 26245:5099
+ip community-list standard ANUNCIA-NORTE+7 permit 26245:1007
+ip ssh port 2222 rotary 1
+!
+!
+ip prefix-list DEFAULT seq 5 permit 0.0.0.0/0
+!
+ip prefix-list FILTRO-BOGONS seq 5 permit 0.0.0.0/8 le 32
+ip prefix-list FILTRO-BOGONS seq 10 permit 10.0.0.0/8 le 32
+ip prefix-list FILTRO-BOGONS seq 15 permit 100.64.0.0/10 le 32
+ip prefix-list FILTRO-BOGONS seq 20 permit 127.0.0.0/8 le 32
+ip prefix-list FILTRO-BOGONS seq 25 permit 169.254.0.0/16 le 32
+ip prefix-list FILTRO-BOGONS seq 30 permit 172.16.0.0/12 le 32
+          ip prefix-list FILTRO-BOGONS seq 35 permit 192.0.0.0/24 le 32
+ip prefix-list FILTRO-BOGONS seq 40 permit 192.0.2.0/24 le 32
+ip prefix-list FILTRO-BOGONS seq 45 permit 192.168.0.0/16 le 32
+ip prefix-list FILTRO-BOGONS seq 50 permit 198.18.0.0/15 le 32
+ip prefix-list FILTRO-BOGONS seq 55 permit 198.51.100.0/24 le 32
+ip prefix-list FILTRO-BOGONS seq 60 permit 203.0.113.0/24 le 32
+ip prefix-list FILTRO-BOGONS seq 65 permit 224.0.0.0/4 le 32
+ip prefix-list FILTRO-BOGONS seq 70 permit 240.0.0.0/4 le 32
+!
+ip prefix-list IDX seq 5 permit 45.177.173.0/24
+!
+ip prefix-list SILVAN-v4 seq 5 permit 164.163.228.0/22 le 24
+!
+ip prefix-list VCNET216.23-v4 seq 5 permit 177.52.216.0/23
+!
+ip prefix-list VCNET216.24-v4 seq 10 permit 177.52.216.0/24
+!
+ip prefix-list VCNET217.24-v4 seq 15 permit 177.52.217.0/24
+!
+ip prefix-list VCNET218.24-v4 seq 20 permit 177.52.218.0/24
+!
+ip prefix-list VCNET25-v4 seq 5 permit 177.52.216.0/25
+ip prefix-list VCNET25-v4 seq 10 permit 177.52.216.128/25
+          ip prefix-list VCNET25-v4 seq 15 permit 177.52.217.0/25
+ip prefix-list VCNET25-v4 seq 20 permit 177.52.217.128/25
+ip prefix-list VCNET25-v4 seq 25 permit 177.52.218.0/25
+ip prefix-list VCNET25-v4 seq 30 permit 177.52.218.128/25
+!
+ip prefix-list VCNETWORK-216 seq 5 permit 177.52.216.0/24
+!
+ip prefix-list VCNETWORK-v4 seq 5 permit 177.52.216.0/23
+ip prefix-list VCNETWORK-v4 seq 10 permit 177.52.216.0/24
+ip prefix-list VCNETWORK-v4 seq 15 permit 177.52.217.0/24
+ip prefix-list VCNETWORK-v4 seq 20 permit 177.52.218.0/24
+ip radius source-interface Loopback2 
+!
+ip access-list standard SSH_ACCESS
+ permit 177.52.216.0 0.0.3.255
+ permit 0.0.0.0 255.255.255.252
+!
+ip access-list extended ACESSO
+ permit tcp host 191.241.20.0 any eq telnet
+ permit tcp host 177.52.218.1 any eq telnet
+ permit tcp 191.241.20.0 0.0.3.255 any eq 2222
+ permit tcp 177.52.216.0 0.0.3.255 any eq 2222
+ permit tcp 100.64.0.0 0.63.255.255 any eq 2222
+           permit tcp 10.0.0.0 0.255.255.255 any eq 2222
+ permit tcp 45.177.172.0 0.0.3.255 any eq 2222
+ permit tcp 45.177.172.0 0.0.3.255 any eq 22
+ permit tcp 177.52.216.0 0.0.3.255 any eq 22
+ deny   tcp any any eq 22
+ permit tcp host 191.31.164.24 any eq 2222
+ permit tcp host 191.31.164.24 any eq 22
+ip access-list extended DenyStdSSH
+ deny   tcp any any eq 22
+ip access-list extended SSH_GERENCIA
+access-list 1 permit 100.65.0.0 0.0.15.255
+access-list 10 permit 207.246.71.99
+access-list 10 permit 170.245.213.33
+access-list 10 permit 191.241.20.149
+access-list 10 permit 177.52.216.0 0.0.3.255
+access-list 90 permit 177.52.0.0 0.0.252.255
+access-list 90 deny   any
+ip access-list extended 100
+ permit ip 100.65.0.0 0.0.15.255 any
+ip access-list extended 110
+ip access-list extended 120
+ipv6 route 2804:3F94::/33 Null0
+ipv6 local pool pool_aviso_bloqueio_ipv6 2104:3200:9000::/48 60
+          ipv6 local pool v6-pool1 2804:3F94:1000::/43 56
+ipv6 local pool dhcpv6-pool1 2804:3F94:1020::/51 64
+!
+!
+ipv6 prefix-list DEFAULT-v6 seq 5 permit ::/0
+!
+ipv6 prefix-list SILVAN-v6 seq 5 permit 2804:40F8::/32 le 48
+!
+ipv6 prefix-list VCNETWORK-v6 seq 5 permit 2804:3F94::/33
+!
+route-map IMF-v6-in deny 1 
+!
+route-map IMF-v6-in permit 10 
+ match ipv6 address prefix-list DEFAULT-v6
+!
+route-map IMF-v6-in deny 20 
+ match ipv6 address prefix-list VCNETWORK-v6
+!
+route-map IMF-v6-in deny 200 
+!
+route-map MEUS_PREFIXOS-ASN262452-23 permit 10 
+ set community 26245:1000 26245:1100 26245:5003
+!
+          route-map IMF-v4-in permit 10 
+ set local-preference 150
+!
+route-map IMF-v4-in deny 25 
+ match ip address prefix-list VCNETWORK-v4
+!
+route-map IMF-v4-in deny 1000 
+!
+route-map NORTE.NET-v6-out deny 5 
+ description no-export-asn_267420
+ match community NO-EXPORT NO-EXPORT-NORTE
+!
+route-map NORTE.NET-v6-out permit 10 
+ description anuncio_asn_267420-prepend_0
+ match community ANUNCIA-NORTE
+!
+route-map NORTE.NET-v6-out permit 20 
+ description anuncio_asn_267420-prepend_1
+ match community ANUNCIA-NORTE+1
+ set as-path prepend 262452
+!
+route-map NORTE.NET-v6-out permit 30 
+ description anuncio_asn_267420-prepend_2
+           match community ANUNCIA-NORTE+2
+ set as-path prepend 262452 262452
+!
+route-map NORTE.NET-v6-out permit 40 
+ description anuncio_asn_267420-prepend_3
+ match community ANUNCIA-NORTE+3
+ set as-path prepend 262452 262452 262452
+!
+route-map NORTE.NET-v6-out deny 1000 
+!
+route-map NORTE.NET-v4-out deny 5 
+ description no-export-asn_267420
+ match community NO-EXPORT NO-EXPORT-NORTE
+!
+route-map NORTE.NET-v4-out permit 10 
+ description anuncio_asn_267420-prepend_0
+ match community ANUNCIA-NORTE
+ set community 65000:19551
+!
+route-map NORTE.NET-v4-out permit 20 
+ description anuncio_asn_267420-prepend_1
+ match community ANUNCIA-NORTE+1
+ set as-path prepend 262452
+           set community 65000:19551
+!
+route-map NORTE.NET-v4-out permit 30 
+ description anuncio_asn_267420-prepend_2
+ match community ANUNCIA-NORTE+2
+ set as-path prepend 262452 262452
+ set community 65000:19551
+!
+route-map NORTE.NET-v4-out permit 40 
+ description anuncio_asn_267420-prepend_3
+ match community ANUNCIA-NORTE+3
+ set as-path prepend 262452 262452 262452
+ set community 65000:19551
+!
+route-map NORTE.NET-v4-out deny 1000 
+!
+route-map MEUS_PREFIXOS-ASN262452 permit 10 
+ description marca_community-meus_blocos
+ set community 26245:1000 26245:1100
+!
+route-map NORTE2.NET-v4-out deny 5 
+ description no-export-asn_267420
+ match community NO-EXPORT NO-EXPORT-NORTE
+          !
+route-map NORTE2.NET-v4-out permit 10 
+ description anuncio_asn_267420-prepend_0
+ match community ANUNCIA-NORTE
+ set metric 200
+ set community 65000:19551
+!
+route-map NORTE2.NET-v4-out permit 20 
+ description anuncio_asn_267420-prepend_1
+ match community ANUNCIA-NORTE+1
+ set metric 200
+ set as-path prepend 262452
+ set community 65000:19551
+!
+route-map NORTE2.NET-v4-out permit 30 
+ description anuncio_asn_267420-prepend_2
+ match community ANUNCIA-NORTE+2
+ set metric 200
+ set as-path prepend 262452 262452
+ set community 65000:19551
+!
+route-map NORTE2.NET-v4-out permit 40 
+ description anuncio_asn_267420-prepend_3
+           match community ANUNCIA-NORTE+3
+ set metric 200
+ set as-path prepend 262452 262452 262452
+ set community 65000:19551
+!
+route-map NORTE2.NET-v4-out deny 1000 
+!
+route-map MEUS_PREFIXOS-217-ASN262452 permit 10 
+ description marca_community-meus_blocos-217
+ set community 26245:1004 26245:5000
+!
+route-map MEUS_PREFIXOS-218-ASN262452 permit 10 
+ description marca_community-meus_blocos-218
+ set community 26245:1000 26245:1100
+!
+route-map NORTE2.NET-v4-in permit 15 
+ set local-preference 250
+!
+route-map NORTE2.NET-v4-in deny 25 
+ match ip address prefix-list VCNETWORK-v4
+!
+route-map NORTE2.NET-v4-in deny 10000 
+!
+          route-map IMF-v6-out deny 10 
+ match community NO-EXPORT NO-EXPORT-IMF
+!
+route-map IMF-v6-out permit 20 
+ description anuncio_asn_268995-prepend_0
+ match community ANUNCIA-IMF
+!
+route-map IMF-v6-out permit 30 
+ match community ANUNCIA-IMF+1
+ set as-path prepend 262452
+!
+route-map IMF-v6-out permit 40 
+ description anuncio_asn_268995-prepend_2
+ match community ANUNCIA-IMF+2
+ set as-path prepend 262452 262452
+!
+route-map IMF-v6-out permit 50 
+ description anuncio_asn_268995-prepend_2
+ description anuncio_asn_268995-prepend_3
+ match community ANUNCIA-IMF+3
+ set as-path prepend 262452 262452 262452
+!
+route-map IMF-v6-out permit 60 
+           description anuncio_asn_268995-prepend_4
+ match community ANUNCIA-IMF+4
+ set as-path prepend 262452 262452 262452 262452
+!
+route-map IMF-v6-out permit 70 
+ description anuncio_asn_268995-prepend_7
+ match community ANUNCIA-IMF+7
+ set as-path prepend 262452 262452 262452 262452 262452 262452 262452
+!
+route-map IMF-v6-out deny 1000 
+!
+route-map IMF-v4-out permit 10 
+ match ip address prefix-list VCNET217.24-v4
+ match community NO-EXPORT NO-EXPORT-IMF
+!
+route-map IMF-v4-out permit 20 
+ description anuncio_asn_268995-prepend_0
+ match community ANUNCIA-IMF
+!
+route-map IMF-v4-out permit 30 
+ match community ANUNCIA-IMF+1
+ set as-path prepend 262452
+!
+          route-map IMF-v4-out permit 40 
+ match community ANUNCIA-IMF+2
+ set as-path prepend 262452 262452
+!
+route-map IMF-v4-out permit 50 
+ description anuncio_asn_268995-prepend_2
+ match community ANUNCIA-IMF+3
+ set as-path prepend 262452 262452 262452
+!
+route-map IMF-v4-out permit 60 
+ description anuncio_asn_268995-prepend_4
+ match community ANUNCIA-IMF+4
+ set as-path prepend 262452 262452 262452 262452
+!
+route-map IMF-v4-out permit 70 
+ description anuncio_asn_268995-prepend_7
+ match community ANUNCIA-IMF+7
+ set as-path prepend 262452 262452 262452 262452 262452 262452 262452
+!
+route-map IMF-v4-out deny 1000 
+!
+route-map NORTE.NET-v6-in permit 10 
+ match ipv6 address prefix-list DEFAULT-v6
+          !
+route-map NORTE.NET-v6-in deny 20 
+ match ipv6 address prefix-list VCNETWORK-v6
+!
+route-map NORTE.NET-v6-in deny 200 
+!
+route-map NORTE.NET-v4-in permit 15 
+ set local-preference 300
+!
+route-map NORTE.NET-v4-in deny 25 
+ match ip address prefix-list VCNETWORK-v4
+!
+route-map NORTE.NET-v4-in deny 200 
+ set local-preference 200
+!
+snmp-server user antomnio.idc idcorpgroup v3 
+snmp-server group idcorpgroup v3 auth access 10
+snmp-server community idcorpbrasil RO
+snmp-server community SGP-GRAPHICs RO
+snmp-server community idcorp RO 10
+snmp-server community idcorp2020 RO
+snmp-server contact "Ronaldo"
+snmp-server chassis-id "Cisco-BGP-VC"
+          snmp-server enable traps snmp authentication linkdown linkup coldstart warmstart
+snmp-server enable traps vrrp
+snmp-server enable traps pfr
+snmp-server enable traps flowmon
+snmp-server enable traps ds1
+snmp-server enable traps entity-perf throughput-notif
+snmp-server enable traps call-home message-send-fail server-fail
+snmp-server enable traps tty
+snmp-server enable traps eigrp
+snmp-server enable traps casa
+snmp-server enable traps smart-license
+snmp-server enable traps license
+snmp-server enable traps atm subif
+snmp-server enable traps bfd
+snmp-server enable traps memory bufferpeak
+snmp-server enable traps config-copy
+snmp-server enable traps config
+snmp-server enable traps config-ctid
+snmp-server enable traps dial
+snmp-server enable traps diameter
+snmp-server enable traps dlsw
+snmp-server enable traps dsp card-status
+snmp-server enable traps dsp oper-state
+          snmp-server enable traps dsp video-usage
+snmp-server enable traps dsp video-out-of-resource
+snmp-server enable traps fru-ctrl
+snmp-server enable traps entity
+snmp-server enable traps event-manager
+snmp-server enable traps frame-relay
+snmp-server enable traps frame-relay subif
+snmp-server enable traps hsrp
+snmp-server enable traps pppoe
+snmp-server enable traps cpu threshold
+snmp-server enable traps ipsla
+snmp-server enable traps syslog
+snmp-server enable traps l2tun session
+snmp-server enable traps l2tun pseudowire status
+snmp-server enable traps pki
+snmp-server enable traps adslline
+snmp-server enable traps vdsl2line
+snmp-server enable traps ethernet evc status create delete
+snmp-server enable traps ether-oam
+snmp-server enable traps ethernet cfm cc mep-up mep-down cross-connect loop config
+snmp-server enable traps ethernet cfm crosscheck mep-missing mep-unknown service-up
+          snmp-server enable traps entity-qfp mem-res-thresh throughput-notif
+snmp-server enable traps entity-state
+snmp-server enable traps entity-sensor
+snmp-server enable traps flash insertion removal lowspace
+snmp-server enable traps firewall serverstatus
+snmp-server enable traps netsync
+snmp-server enable traps ptp
+snmp-server enable traps lost-ptp-slave
+snmp-server enable traps breach-ptp-offset-threshold
+snmp-server enable traps sbc adj-status
+snmp-server enable traps sbc blacklist
+snmp-server enable traps sbc congestion-alarm
+snmp-server enable traps sbc h248-ctrlr-status
+snmp-server enable traps sbc media-source
+snmp-server enable traps sbc radius-conn-status
+snmp-server enable traps sbc sla-violation
+snmp-server enable traps sbc sla-violation-rev1
+snmp-server enable traps sbc svc-state
+snmp-server enable traps sbc qos-statistics
+snmp-server enable traps srp
+snmp-server enable traps isdn call-information
+snmp-server enable traps isdn layer2
+snmp-server enable traps isdn chan-not-avail
+          snmp-server enable traps isdn ietf
+snmp-server enable traps cnpd
+snmp-server enable traps entity-diag boot-up-fail hm-test-recover hm-thresh-reached scheduled-test-fail
+snmp-server enable traps cef resource-failure peer-state-change peer-fib-state-change inconsistency
+snmp-server enable traps sonet
+snmp-server enable traps resource-policy
+snmp-server enable traps otn
+snmp-server enable traps ip local pool
+snmp-server enable traps lisp
+snmp-server enable traps aaa_server
+snmp-server enable traps dhcp
+snmp-server enable traps auth-framework sec-violation
+snmp-server enable traps pw vc
+snmp-server enable traps rsvp
+snmp-server enable traps ipmulticast
+snmp-server enable traps msdp
+snmp-server enable traps pim neighbor-change rp-mapping-change invalid-pim-message
+snmp-server enable traps mvpn
+snmp-server enable traps pimstdmib neighbor-loss invalid-register invalid-join-prune rp-mapping-change interface-election
+          snmp-server enable traps isis
+snmp-server enable traps ospfv3 state-change
+snmp-server enable traps ospfv3 errors
+snmp-server enable traps nhrp nhs
+snmp-server enable traps nhrp nhc
+snmp-server enable traps nhrp nhp
+snmp-server enable traps nhrp quota-exceeded
+snmp-server enable traps ike policy add
+snmp-server enable traps ike policy delete
+snmp-server enable traps ike tunnel start
+snmp-server enable traps ike tunnel stop
+snmp-server enable traps gdoi gm-start-registration
+snmp-server enable traps gdoi gm-registration-complete
+snmp-server enable traps gdoi gm-re-register
+snmp-server enable traps gdoi gm-rekey-rcvd
+snmp-server enable traps gdoi gm-rekey-fail
+snmp-server enable traps gdoi ks-rekey-pushed
+snmp-server enable traps gdoi gm-incomplete-cfg
+snmp-server enable traps gdoi ks-no-rsa-keys
+snmp-server enable traps gdoi ks-new-registration
+snmp-server enable traps gdoi ks-reg-complete
+snmp-server enable traps gdoi ks-role-change
+snmp-server enable traps gdoi ks-gm-deleted
+          snmp-server enable traps gdoi ks-peer-reachable
+snmp-server enable traps gdoi ks-peer-unreachable
+snmp-server enable traps bulkstat collection transfer
+snmp-server enable traps alarms informational
+snmp-server enable traps voice
+snmp-server enable traps ethernet cfm alarm
+snmp-server enable traps rf
+snmp-server enable traps transceiver all
+snmp-server enable traps vrfmib vrf-up vrf-down vnet-trunk-up vnet-trunk-down
+snmp-server host 10.1.1.232 version 2c idcorp 
+snmp-server host 177.52.216.10 version 2c idcorp 
+snmp-server host 177.52.36.236 version 2c idcorp 
+snmp-server host 191.241.20.102 version 2c idcorp 
+snmp-server host 191.241.20.149 version 2c idcorp 
+!
+!
+no radius-server attribute 77 include-in-acct-req
+no radius-server attribute 77 include-in-access-req
+radius-server attribute 6 on-for-login-auth
+radius-server attribute 6 support-multiple
+radius-server attribute 8 include-in-access-req
+radius-server attribute 32 include-in-access-req 
+radius-server attribute 32 include-in-accounting-req 
+          radius-server attribute 55 include-in-acct-req
+radius-server attribute 55 access-request include
+radius-server attribute 25 access-request include
+radius-server attribute nas-port format d
+radius-server attribute 31 mac format one-byte delimiter colon upper-case
+radius-server attribute 31 send nas-port-detail mac-only
+radius-server attribute 31 remote-id
+radius-server attribute nas-port-id include circuit-id 
+radius-server retransmit 6
+radius-server timeout 30
+radius-server deadtime 1
+radius-server authorization default Framed-Protocol ppp
+radius-server vsa send cisco-nas-port
+!
+radius server vcsgp
+ address ipv4 177.52.36.236 auth-port 3912 acct-port 3913
+ timeout 30
+ retransmit 6
+ key 7 1401112B02013E0B372F23
+!
+!
+control-plane
+!
+          !
+!
+!
+!
+gateway 
+ timer receive-rtp 1200
+!
+!
+line con 0
+ stopbits 1
+line aux 0
+ stopbits 1
+line vty 0 4
+ access-class ACESSO in
+ exec-timeout 5 0
+ password 7 0706254F411B092537405B5E54
+ logging synchronous
+ rotary 1
+ length 0
+ transport input ssh
+ transport output ssh
+line vty 5 9
+!
+          ntp server a.ntp.br source Loopback2
+!
+!
+!
+!
+event manager applet 1613060559774storeShowTech
+ event none sync no maxrun 31536000
+ action 001 cli command "enable"
+ action 002 cli command "traceroute cisco.com"
+ action 003 file open TECHFILE bootflash:1613060559774sh_tech.txt w+
+ action 004 file puts TECHFILE "$_cli_result"
+ action 005 file close TECHFILE
+!
+end
