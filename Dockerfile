@@ -5,6 +5,10 @@ LABEL authors="julioNolasco"
 RUN apt-get update && apt-get install -y iproute2
 RUN apt-get update && apt-get install -y iputils-ping
 
+# Copiar os arquivos para o contêiner
+COPY enable_forwarding.sh /usr/local/bin/enable_forwarding.sh
+COPY init_routes.sh /usr/local/bin/init_routes.sh
+
 # Crie o diretório .ssh se não existir
 RUN mkdir -p /root/.ssh && \
     touch /root/.ssh/known_hosts
@@ -12,6 +16,8 @@ RUN mkdir -p /root/.ssh && \
 # Defina permissões adequadas para o diretório e o arquivo
 RUN chmod 700 /root/.ssh && \
     chmod 644 /root/.ssh/known_hosts
+    chmod 777 enable_forwarding.sh
+    chmod 777 init_routes.sh
 
 WORKDIR /app
 

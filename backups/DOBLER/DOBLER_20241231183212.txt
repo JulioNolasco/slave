@@ -1,0 +1,1160 @@
+edit 
+Entering configuration mode
+
+[edit]
+antonio.idc@DOBLER_BGP# 
+
+[edit]
+antonio.idc@DOBLER_BGP# show | display set 
+ set version 19.4R3-S2.2
+set groups OPERADORA-CLICKNET interfaces xe-0/0/0 unit 1047 description CLICKNET
+set groups OPERADORA-CLICKNET interfaces xe-0/0/0 unit 1047 vlan-id 1047
+set groups OPERADORA-CLICKNET interfaces xe-0/0/0 unit 1047 family inet address 100.100.1.130/31
+set groups OPERADORA-CLICKNET interfaces xe-0/0/0 unit 1047 family inet6 address 2804:1b50:11:ff::2/126
+set groups OPERADORA-CLICKNET interfaces xe-0/0/0 unit 1047 family inet6 address 2804:1b50:11::2/126
+set groups OPERADORA-CLICKNET policy-options policy-statement IPV4-CLICKNET-IM term 05 from route-filter 0.0.0.0/0 exact
+set groups OPERADORA-CLICKNET policy-options policy-statement IPV4-CLICKNET-IM term 05 then local-preference 200
+set groups OPERADORA-CLICKNET policy-options policy-statement IPV4-CLICKNET-IM term 05 then accept
+set groups OPERADORA-CLICKNET policy-options policy-statement IPV4-CLICKNET-IM term 20 then reject
+set groups OPERADORA-CLICKNET policy-options policy-statement IPV4-CLICKNET-EXP term 5 from route-filter 45.189.141.0/24 exact
+set groups OPERADORA-CLICKNET policy-options policy-statement IPV4-CLICKNET-EXP term 5 from route-filter 45.189.140.0/22 upto /24
+set groups OPERADORA-CLICKNET policy-options policy-statement IPV4-CLICKNET-EXP term 5 then accept
+---(more)---
+                                        
+set groups OPERADORA-CLICKNET policy-options policy-statement IPV4-CLICKNET-EXP term 10 from community ANUNCIA-CLICKNET
+set groups OPERADORA-CLICKNET policy-options policy-statement IPV4-CLICKNET-EXP term 10 then accept
+set groups OPERADORA-CLICKNET policy-options policy-statement IPV4-CLICKNET-EXP term 100 then reject
+set groups OPERADORA-CLICKNET policy-options policy-statement IPV6-CLICKNET-IM term 10 from route-filter ::/0 exact
+set groups OPERADORA-CLICKNET policy-options policy-statement IPV6-CLICKNET-IM term 10 then local-preference 200
+set groups OPERADORA-CLICKNET policy-options policy-statement IPV6-CLICKNET-IM term 10 then accept
+set groups OPERADORA-CLICKNET policy-options policy-statement IPV6-CLICKNET-IM term 100 then accept
+set groups OPERADORA-CLICKNET policy-options policy-statement IPV6-CLICKNET-EXP term 5 from route-filter 2804:66ec::/33 upto /48
+set groups OPERADORA-CLICKNET policy-options policy-statement IPV6-CLICKNET-EXP term 5 from route-filter 2804:66ec::/32 upto /48
+set groups OPERADORA-CLICKNET policy-options policy-statement IPV6-CLICKNET-EXP term 5 then accept
+set groups OPERADORA-CLICKNET policy-options policy-statement IPV6-CLICKNET-EXP term 10 from community ANUNCIA-CLICKNET
+---(more)---
+                                        
+set groups OPERADORA-CLICKNET policy-options policy-statement IPV6-CLICKNET-EXP term 10 then accept
+set groups OPERADORA-CLICKNET policy-options policy-statement IPV6-CLICKNET-EXP term 15 then reject
+set groups OPERADORA-CLICKNET firewall filter PROTEGE-BORDA term 10 from source-address 131.0.192.0/22
+set groups OPERADORA-CLICKNET firewall filter PROTEGE-BORDA term 10 from source-address 45.189.140.0/22
+set groups OPERADORA-CLICKNET firewall filter PROTEGE-BORDA term 10 from source-address 191.241.20.0/22
+set groups OPERADORA-CLICKNET firewall filter PROTEGE-BORDA term 10 from source-address 179.105.174.0/24
+set groups OPERADORA-CLICKNET firewall filter PROTEGE-BORDA term 10 from source-address 100.64.0.0/10
+set groups OPERADORA-CLICKNET firewall filter PROTEGE-BORDA term 10 from source-address 10.0.11.0/24
+set groups OPERADORA-CLICKNET firewall filter PROTEGE-BORDA term 10 from source-address 177.105.144.0/20
+set groups OPERADORA-CLICKNET firewall filter PROTEGE-BORDA term 10 from source-address 45.177.172.0/22
+set groups OPERADORA-CLICKNET firewall filter PROTEGE-BORDA term 10 from destination-port ssh
+set groups OPERADORA-CLICKNET firewall filter PROTEGE-BORDA term 10 then accept
+---(more 3%)---
+                                        
+set groups OPERADORA-CLICKNET firewall filter PROTEGE-BORDA term 15 from source-address 45.189.140.0/22
+set groups OPERADORA-CLICKNET firewall filter PROTEGE-BORDA term 15 from source-address 131.0.192.0/22
+set groups OPERADORA-CLICKNET firewall filter PROTEGE-BORDA term 15 from source-address 100.64.0.0/10
+set groups OPERADORA-CLICKNET firewall filter PROTEGE-BORDA term 15 from protocol icmp
+set groups OPERADORA-CLICKNET firewall filter PROTEGE-BORDA term 15 then accept
+set groups OPERADORA-CLICKNET firewall filter PROTEGE-BORDA term 30 from source-address 45.189.140.0/22
+set groups OPERADORA-CLICKNET firewall filter PROTEGE-BORDA term 30 from source-address 100.64.0.0/10
+set groups OPERADORA-CLICKNET firewall filter PROTEGE-BORDA term 30 from source-address 192.168.0.0/16
+set groups OPERADORA-CLICKNET firewall filter PROTEGE-BORDA term 30 from source-address 10.0.0.0/8
+set groups OPERADORA-CLICKNET firewall filter PROTEGE-BORDA term 30 from protocol ospf
+set groups OPERADORA-CLICKNET firewall filter PROTEGE-BORDA term 30 then accept
+set groups OPERADORA-CLICKNET firewall filter PROTEGE-BORDA term 100 from destination-port snmp
+---(more 4%)---
+                                        
+set groups OPERADORA-CLICKNET firewall filter PROTEGE-BORDA term 100 from destination-port ssh
+set groups OPERADORA-CLICKNET firewall filter PROTEGE-BORDA term 100 from destination-port 1900
+set groups OPERADORA-CLICKNET firewall filter PROTEGE-BORDA term 100 from destination-port ntp
+set groups OPERADORA-CLICKNET firewall filter PROTEGE-BORDA term 100 from destination-port domain
+set groups OPERADORA-CLICKNET firewall filter PROTEGE-BORDA term 100 from destination-port netbios-ns
+set groups OPERADORA-CLICKNET firewall filter PROTEGE-BORDA term 100 from destination-port netbios-ssn
+set groups OPERADORA-CLICKNET firewall filter PROTEGE-BORDA term 100 from destination-port netbios-dgm
+set groups OPERADORA-CLICKNET firewall filter PROTEGE-BORDA term 100 from destination-port 1434
+set groups OPERADORA-CLICKNET firewall filter PROTEGE-BORDA term 100 from destination-port 69
+set groups OPERADORA-CLICKNET firewall filter PROTEGE-BORDA term 100 from destination-port 111
+set groups OPERADORA-CLICKNET firewall filter PROTEGE-BORDA term 100 from destination-port 2049
+---(more 5%)---
+                                        
+set groups OPERADORA-CLICKNET firewall filter PROTEGE-BORDA term 100 from destination-port 3133
+set groups OPERADORA-CLICKNET firewall filter PROTEGE-BORDA term 100 from destination-port 0
+set groups OPERADORA-CLICKNET firewall filter PROTEGE-BORDA term 100 from destination-port telnet
+set groups OPERADORA-CLICKNET firewall filter PROTEGE-BORDA term 100 from destination-port ftp
+set groups OPERADORA-CLICKNET firewall filter PROTEGE-BORDA term 100 from destination-port 9001
+set groups OPERADORA-CLICKNET firewall filter PROTEGE-BORDA term 100 then discard
+set groups OPERADORA-CLICKNET firewall filter PROTEGE-BORDA term 80 from protocol tcp
+set groups OPERADORA-CLICKNET firewall filter PROTEGE-BORDA term 80 from port 179
+set groups OPERADORA-CLICKNET firewall filter PROTEGE-BORDA term 80 then accept
+deactivate groups OPERADORA-CLICKNET firewall filter PROTEGE-BORDA term 80
+set groups OPERADORA-CLICKNET firewall filter PROTEGE-BORDA term 110 from is-fragment
+set groups OPERADORA-CLICKNET firewall filter PROTEGE-BORDA term 110 then discard
+set groups OPERADORA-CLICKNET firewall filter PROTEGE-BORDA term 500 then accept
+---(more 6%)---
+                                        
+deactivate groups OPERADORA-CLICKNET firewall filter PROTEGE-BORDA
+set groups OPERADORA-CLICKNET protocols bgp group IPV4-CLICKNET type external
+set groups OPERADORA-CLICKNET protocols bgp group IPV4-CLICKNET import IPV4-CLICKNET-IM
+set groups OPERADORA-CLICKNET protocols bgp group IPV4-CLICKNET family inet unicast
+set groups OPERADORA-CLICKNET protocols bgp group IPV4-CLICKNET export IPV4-CLICKNET-EXP
+set groups OPERADORA-CLICKNET protocols bgp group IPV4-CLICKNET peer-as 61719
+set groups OPERADORA-CLICKNET protocols bgp group IPV4-CLICKNET neighbor 100.100.1.131
+set groups OPERADORA-CLICKNET protocols bgp group IPV6-CLICKNET type external
+set groups OPERADORA-CLICKNET protocols bgp group IPV6-CLICKNET import IPV6-CLICKNET-IM
+set groups OPERADORA-CLICKNET protocols bgp group IPV6-CLICKNET export IPV6-CLICKNET-EXP
+set groups OPERADORA-CLICKNET protocols bgp group IPV6-CLICKNET peer-as 61719
+set groups OPERADORA-CLICKNET protocols bgp group IPV6-CLICKNET neighbor 2804:1b50:11::1
+set groups OSPF-v2 interfaces xe-0/0/0 unit 200 description UPLINK-CCR-CGNAT
+set groups OSPF-v2 interfaces xe-0/0/0 unit 200 vlan-id 200
+set groups OSPF-v2 interfaces xe-0/0/0 unit 200 family inet address 45.189.140.1/30
+---(more 8%)---
+                                        
+deactivate groups OSPF-v2 interfaces xe-0/0/0 unit 200
+set groups OSPF-v2 interfaces xe-0/0/0 unit 230 description UPLINK-CONCENTRADOR
+set groups OSPF-v2 interfaces xe-0/0/0 unit 230 vlan-id 230
+set groups OSPF-v2 interfaces xe-0/0/0 unit 230 family inet address 45.189.140.9/30
+set groups OSPF-v2 interfaces xe-0/0/0 unit 230 family inet address 10.63.69.2/30
+set groups OSPF-v2 interfaces xe-0/0/0 unit 402 description UPLINK-JUNIPER-PPPOE
+set groups OSPF-v2 interfaces xe-0/0/0 unit 402 vlan-id 402
+set groups OSPF-v2 interfaces xe-0/0/0 unit 402 family inet address 45.189.140.1/30
+set groups OSPF-v2 interfaces xe-0/0/0 unit 402 family inet6 address 2804:66ec:200::/127
+set groups OSPF-v2 protocols ospf area 0.0.0.0 interface xe-0/0/0.200 interface-type p2p
+set groups OSPF-v2 protocols ospf area 0.0.0.0 interface xe-0/0/0.230 interface-type p2p
+set groups OSPF-v2 protocols ospf area 0.0.0.0 interface xe-0/0/0.402 interface-type p2p
+set groups OSPF-v3 interfaces xe-0/0/0 unit 200 description UPLINK-CCR-CGNAT
+set groups OSPF-v3 interfaces xe-0/0/0 unit 200 vlan-id 200
+set groups OSPF-v3 interfaces xe-0/0/0 unit 200 family inet6 mtu 1500
+---(more 9%)---
+                                        
+set groups OSPF-v3 interfaces xe-0/0/0 unit 200 family inet6 address 2804:66ec::1/64
+set groups OSPF-v3 interfaces xe-0/0/0 unit 230 description UPLINK-CONCENTRADOR
+set groups OSPF-v3 interfaces xe-0/0/0 unit 230 family inet6 mtu 1500
+set groups OSPF-v3 interfaces xe-0/0/0 unit 230 family inet6 address 2804:66ec:f0d4::1/64
+set groups OSPF-v3 policy-options policy-statement OSPF3_EXP term 1 from route-filter ::/0 exact
+set groups OSPF-v3 policy-options policy-statement OSPF3_EXP term 1 then accept
+set groups OSPF-v3 policy-options policy-statement OSPF3_EXP term 5 from protocol direct
+set groups OSPF-v3 policy-options policy-statement OSPF3_EXP term 5 then accept
+set groups OSPF-v3 policy-options policy-statement OSPF3_EXP term 10 from protocol static
+set groups OSPF-v3 policy-options policy-statement OSPF3_EXP term 10 then accept
+set groups OSPF-v3 policy-options policy-statement OSPF3_EXP term 100 then reject
+set groups OSPF-v3 protocols ospf3 area 0.0.0.0 interface xe-0/0/0.200 interface-type p2p
+set groups OSPF-v3 protocols ospf3 area 0.0.0.0 interface xe-0/0/0.230 interface-type p2p
+set groups OSPF-v3 protocols ospf3 area 0.0.0.0 interface lo0.0
+set groups OSPF-v3 protocols ospf3 export OSPF3_EXP
+---(more 11%)---
+                                        
+set groups DDDoS system ddos-protection protocols pppoe aggregate bandwidth 10000
+set groups DDDoS system ddos-protection protocols pppoe padi bandwidth 10
+set groups DDDoS system ddos-protection protocols pppoe padi burst 10
+set groups DDDoS system ddos-protection protocols pppoe padi recover-time 1
+set groups DDDoS system ddos-protection protocols dhcpv4 aggregate bandwidth 100
+set groups DDDoS system ddos-protection protocols dhcpv4 aggregate burst 10
+set groups DDDoS system ddos-protection protocols dhcpv4 discover bandwidth 10
+set groups DDDoS system ddos-protection protocols dhcpv4 discover burst 20
+set groups DDDoS system ddos-protection protocols dhcpv4 discover recover-time 1
+set groups DDDoS system ddos-protection protocols dhcpv4 offer fpc 0 bandwidth-scale 80
+set groups DDDoS system ddos-protection protocols dhcpv4 offer fpc 0 burst-scale 75
+set groups DDDoS system ddos-protection protocols dhcpv4 offer bypass-aggregate
+set groups DDDoS system ddos-protection protocols dhcpv4 offer priority medium
+set groups DDDoS system ddos-protection protocols dhcpv6 aggregate bandwidth 100
+set groups DDDoS system ddos-protection protocols dhcpv6 aggregate burst 100
+set groups DDDoS system ddos-protection protocols dhcpv6 solicit bandwidth 100
+set groups DDDoS system ddos-protection protocols dhcpv6 solicit burst 100
+set groups DDDoS system ddos-protection protocols dhcpv6 solicit recover-time 1
+set groups DDDoS system ddos-protection protocols dhcpv6 reply fpc 0 bandwidth-scale 80
+---(more 13%)---
+                                        
+set groups DDDoS system ddos-protection protocols dhcpv6 reply fpc 0 burst-scale 75
+set groups DDDoS system ddos-protection protocols dhcpv6 reply bypass-aggregate
+set groups DDDoS system ddos-protection protocols dhcpv6 reply priority medium
+set groups DDDoS system ddos-protection protocols arp aggregate disable-routing-engine
+set groups DDDoS system ddos-protection protocols arp aggregate disable-fpc
+set groups CGNAT interfaces ae1 unit 100 description CGNAT_WAN
+set groups CGNAT interfaces ae1 unit 100 vlan-id 100
+set groups CGNAT interfaces ae1 unit 100 family inet address 172.16.30.1/30
+set groups CGNAT interfaces ae1 unit 101 description CGNAT_LAN
+set groups CGNAT interfaces ae1 unit 101 vlan-id 101
+set groups CGNAT interfaces ae1 unit 101 family inet filter output PBR-CGNAT
+set groups CGNAT interfaces ae1 unit 101 family inet address 172.16.30.5/30
+set groups CGNAT firewall filter PBR-CGNAT term 10 from source-address 100.64.0.0/10
+set groups CGNAT firewall filter PBR-CGNAT term 10 then count PBR-CGNAT
+set groups CGNAT firewall filter PBR-CGNAT term 10 then next-ip 172.16.30.6/32
+set groups CGNAT firewall filter PBR-CGNAT term aceita-resto then accept
+set groups Cisco_tem interfaces xe-0/0/0 unit 80 vlan-id 80
+set groups Cisco_tem interfaces xe-0/0/0 unit 80 family inet address 45.189.140.13/31
+set groups CLIENTES_DEDICADO interfaces xe-0/0/0 unit 79 description CLIENTE_TIM
+---(more 14%)---
+                                        
+set groups CLIENTES_DEDICADO interfaces xe-0/0/0 unit 79 vlan-id 79
+set groups CLIENTES_DEDICADO interfaces xe-0/0/0 unit 79 family inet address 45.189.140.33/29
+set groups CLIENTES_DEDICADO interfaces xe-0/0/0 unit 79 family inet address 45.189.140.41/29
+set groups CLIENTES_DEDICADO interfaces xe-0/0/0 unit 79 family inet address 100.65.0.1/30
+set groups CLIENTES_DEDICADO routing-options static route 45.189.143.0/25 next-hop 100.65.0.2
+set apply-groups OPERADORA-CLICKNET
+set apply-groups OSPF-v2
+set apply-groups OSPF-v3
+set apply-groups CGNAT
+set apply-groups Cisco_tem
+set apply-groups CLIENTES_DEDICADO
+set system host-name DOBLER_BGP
+set system root-authentication encrypted-password "$6$GXcIMTuq$TulWPSipoj9UUHMr9c/CSsQ6XTMeGnJ.faYum.Eit0QIUf3rEg9Ddir1s6KznXJ.Ar1TVuDqL99hzbRhdrLPs1"
+set system configuration-database max-db-size 104857600
+set system login user antonio.idc uid 2005
+set system login user antonio.idc class super-user
+---(more 16%)---
+                                        
+set system login user antonio.idc authentication encrypted-password "$6$Dc6qBLwj$XMEiyeI51ZgYTyUtG7u.tpQVfUv1cmgN4DUP5CrcsP9BIEbPddr2Q2xVJQ6ZHm2Yz0OHxU2MyGoaZS675yNre."
+set system login user idcorp uid 2003
+set system login user idcorp class super-user
+set system login user idcorp authentication encrypted-password "$6$D9Rfto55$WvbK0zgZ70f0aTqVLvNMDpba6MY3RJDRpnEKxPz8xj8xbHMDl2VhACzYtV.yAvD73hJN8I2LeuKo9V1HJMJ.f0"
+set system login user idcorp.danilo uid 2002
+set system login user idcorp.danilo class super-user
+set system login user idcorp.danilo authentication encrypted-password "$6$skUsJ4WF$fONG4dl1Y3DyJzsB7qVCbVw98O1s4IkA3PcEZQ4es.tLbYdQSje7dLCgA6fq8rkLzhOXN76XkFx4g5X/kbLWu."
+set system login user rodrigo uid 2000
+set system login user rodrigo class super-user
+set system login user rodrigo authentication encrypted-password "$6$94otG.X5$OZ1K.nXKHEGWE9kgfk2UsCm4sNvWYVo6GpMw7RV0p/ntX/QL1.QUwbway7E/ntlCXdByE2Ds8HxikZhPLrjCh0"
+set system services ftp
+set system services ssh root-login deny
+set system services ssh no-tcp-forwarding
+set system services ssh protocol-version v2
+---(more 17%)---
+                                        
+set system services dhcp-local-server dhcpv6 overrides delegated-pool v6-prefix-pool-01
+set system services dhcp-local-server dhcpv6 group DHCPv6-over-pppoe interface pp0.0
+set system services subscriber-management enable
+set system time-zone America/Araguaina
+set system internet-options path-mtu-discovery
+set system internet-options tcp-drop-synfin-set
+set system internet-options ipv6-path-mtu-discovery
+set system internet-options no-tcp-reset drop-all-tcp
+set system ports console log-out-on-disconnect
+set system ports console type vt100
+set system name-server 8.8.8.8
+set system name-server 131.0.192.12
+set system name-server 45.189.140.29
+set system syslog user * any emergency
+set system syslog file messages any notice
+set system syslog file messages authorization info
+set system syslog file interactive-commands interactive-commands any
+set system license keys
+set system processes general-authentication-service traceoptions file radius
+set system processes general-authentication-service traceoptions file size 50m
+set system processes general-authentication-service traceoptions file files 10
+---(more 19%)---
+                                        
+set system processes general-authentication-service traceoptions flag all
+set system ddos-protection protocols pppoe aggregate bandwidth 10000
+set system ddos-protection protocols pppoe padi bandwidth 10
+set system ddos-protection protocols pppoe padi burst 10
+set system ddos-protection protocols pppoe padi recover-time 1
+set system ddos-protection protocols dhcpv4 aggregate bandwidth 100
+set system ddos-protection protocols dhcpv4 aggregate burst 10
+set system ddos-protection protocols dhcpv4 discover bandwidth 10
+set system ddos-protection protocols dhcpv4 discover burst 20
+set system ddos-protection protocols dhcpv4 discover recover-time 1
+set system ddos-protection protocols dhcpv4 offer fpc 0 bandwidth-scale 80
+set system ddos-protection protocols dhcpv4 offer fpc 0 burst-scale 75
+set system ddos-protection protocols dhcpv4 offer bypass-aggregate
+set system ddos-protection protocols dhcpv4 offer priority medium
+set system ddos-protection protocols dhcpv6 aggregate bandwidth 100
+set system ddos-protection protocols dhcpv6 aggregate burst 100
+set system ddos-protection protocols dhcpv6 solicit bandwidth 100
+set system ddos-protection protocols dhcpv6 solicit burst 100
+set system ddos-protection protocols dhcpv6 solicit recover-time 1
+set system ddos-protection protocols dhcpv6 reply fpc 0 bandwidth-scale 80
+set system ddos-protection protocols dhcpv6 reply fpc 0 burst-scale 75
+set system ddos-protection protocols dhcpv6 reply bypass-aggregate
+set system ddos-protection protocols dhcpv6 reply priority medium
+---(more 22%)---
+                                        
+set system ntp server 45.189.140.22
+set system ntp server 200.160.0.8
+set system ntp server 200.189.40.8
+set system ntp source-address 45.189.140.1
+set chassis aggregated-devices ethernet device-count 8
+set chassis network-services enhanced-ip
+set access-profile aaa
+set interfaces xe-0/0/0 vlan-tagging
+set interfaces xe-0/0/0 unit 100 description GERENCIA
+set interfaces xe-0/0/0 unit 100 vlan-id 100
+set interfaces xe-0/0/0 unit 100 family inet address 192.168.100.1/24
+set interfaces xe-0/0/0 unit 101 description SERVIDORES-PROXMOX
+set interfaces xe-0/0/0 unit 101 vlan-id 101
+set interfaces xe-0/0/0 unit 101 family inet address 192.168.155.1/28
+set interfaces xe-0/0/0 unit 101 family inet address 45.189.140.17/28
+set interfaces xe-0/0/0 unit 101 family inet6 address 2804:66ec:beba:c0ca::1/64
+set interfaces xe-0/0/0 unit 231 description SERVIDORES-PROXMOX
+set interfaces xe-0/0/0 unit 231 vlan-id 231
+set interfaces xe-0/0/0 unit 231 family inet address 45.189.143.254/30
+set interfaces xe-0/0/0 unit 231 family inet6 address 2804:66ec:beba:cafe::1/64
+set interfaces xe-0/0/0 unit 402 family inet6 address 2804:66ec:200::/127
+set interfaces xe-0/0/0 unit 1047 family inet
+set interfaces xe-0/0/2 description ENTRADA-PPPOE
+---(more 24%)---
+                                        
+set interfaces xe-0/0/2 flexible-vlan-tagging
+set interfaces xe-0/0/2 auto-configure vlan-ranges dynamic-profile SVLAN accept pppoe
+set interfaces xe-0/0/2 auto-configure vlan-ranges dynamic-profile SVLAN ranges any
+set interfaces xe-0/0/2 auto-configure remove-when-no-subscribers
+set interfaces xe-0/0/2 mtu 9390
+set interfaces xe-0/0/3 flexible-vlan-tagging
+set interfaces ge-1/1/0 gigether-options auto-negotiation
+set interfaces ge-1/1/0 gigether-options 802.3ad ae1
+set interfaces ge-1/1/1 gigether-options 802.3ad ae1
+set interfaces ge-1/1/2 gigether-options 802.3ad ae1
+set interfaces ae1 description CGNAT-CCR1036
+set interfaces ae1 flexible-vlan-tagging
+set interfaces ae1 encapsulation flexible-ethernet-services
+set interfaces ae1 aggregated-ether-options lacp passive
+set interfaces ae1 aggregated-ether-options lacp force-up
+set interfaces lo0 unit 0 family inet address 10.10.10.10/32
+set interfaces lo0 unit 0 family inet6 filter input BLOCK-IPV6-INVALIDO
+deactivate interfaces lo0 unit 0 family inet6 filter input
+set interfaces lo0 unit 0 family inet6 address 2804:1b50:1:1:0:100:0:14/128
+set interfaces lo0 unit 0 family inet6 address 2804:66ec:1:1:0:100:0:14/128 primary
+---(more 26%)---
+                                        
+set interfaces lo0 unit 0 family inet6 address 2804:66ec:1:1:0:100:0:14/128 preferred
+set snmp community public clients 45.189.140.22/32
+set snmp community public_clicknet clients 131.0.192.5/32
+set snmp community public_clicknet clients 131.0.192.2/32
+set snmp community public_dobler authorization read-only
+set snmp community public_dobler clients 191.241.20.149/32
+set snmp community public_dobler clients 45.189.140.22/32
+set snmp community public_dobler clients 45.189.140.21/32
+set policy-options prefix-list snmp-community-clients apply-path "snmp community <*> clients <*>"
+set policy-options policy-statement exportstatic1 term exportstatic1 from protocol static
+set policy-options policy-statement exportstatic1 term exportstatic1 from protocol direct
+set policy-options policy-statement exportstatic1 term exportstatic1 from protocol access-internal
+set policy-options policy-statement exportstatic1 term exportstatic1 from protocol access
+set policy-options policy-statement exportstatic1 term exportstatic1 then accept
+set policy-options community ANUNCIA-CLICKNET members origin:269591L:6839
+set firewall family inet filter bypass-out interface-specific
+set firewall family inet filter bypass-out term 1 then reject
+---(more 27%)---
+                                        
+set firewall family inet filter bypass-in interface-specific
+set firewall family inet filter bypass-in term 1 then reject
+set firewall family inet filter PROTECT-BORDA term 10 from source-address 191.241.20.0/22
+set firewall family inet filter PROTECT-BORDA term 10 from source-address 191.5.164.0/22
+set firewall family inet filter PROTECT-BORDA term 10 from source-address 131.0.192.0/22
+set firewall family inet filter PROTECT-BORDA term 10 from source-address 179.105.174.0/24
+set firewall family inet filter PROTECT-BORDA term 10 from source-address 45.189.140.0/22
+set firewall family inet filter PROTECT-BORDA term 10 from source-address 200.233.147.206/32
+set firewall family inet filter PROTECT-BORDA term 10 from source-address 100.80.0.0/16
+set firewall family inet filter PROTECT-BORDA term 10 from source-address 192.168.159.0/24
+set firewall family inet filter PROTECT-BORDA term 10 from source-address 177.52.218.0/24
+set firewall family inet filter PROTECT-BORDA term 10 from source-address 45.177.172.0/22
+set firewall family inet filter PROTECT-BORDA term 10 from protocol tcp
+---(more 29%)---
+                                        
+set firewall family inet filter PROTECT-BORDA term 10 from destination-port 22
+set firewall family inet filter PROTECT-BORDA term 10 then accept
+set firewall family inet filter PROTECT-BORDA term 20 from protocol icmp
+set firewall family inet filter PROTECT-BORDA term 20 from protocol udp
+set firewall family inet filter PROTECT-BORDA term 20 then policer PROTECT-BORDA
+set firewall family inet filter PROTECT-BORDA term 20 then accept
+set firewall family inet filter PROTECT-BORDA term 30 from source-address 131.0.192.0/22
+set firewall family inet filter PROTECT-BORDA term 30 from source-address 192.168.0.0/16
+set firewall family inet filter PROTECT-BORDA term 30 from source-address 100.64.0.0/10
+set firewall family inet filter PROTECT-BORDA term 30 from protocol ospf
+set firewall family inet filter PROTECT-BORDA term 30 then accept
+set firewall family inet filter PROTECT-BORDA term 40 from source-address 131.0.192.0/22
+set firewall family inet filter PROTECT-BORDA term 40 from protocol tcp
+set firewall family inet filter PROTECT-BORDA term 40 from protocol udp
+set firewall family inet filter PROTECT-BORDA term 40 from port 161
+set firewall family inet filter PROTECT-BORDA term 40 then accept
+set firewall family inet filter PROTECT-BORDA term 50 from protocol tcp
+set firewall family inet filter PROTECT-BORDA term 50 from protocol udp
+set firewall family inet filter PROTECT-BORDA term 50 from port ntp
+---(more 30%)---
+                                        
+set firewall family inet filter PROTECT-BORDA term 50 then accept
+set firewall family inet filter PROTECT-BORDA term 200 then discard
+deactivate firewall family inet filter PROTECT-BORDA
+set firewall family inet filter filter_bgp179 term 1 from source-address 100.100.1.131/32
+set firewall family inet filter filter_bgp179 term 1 from destination-port bgp
+set firewall family inet filter filter_bgp179 term 1 then accept
+set firewall family inet filter filter_bgp179 term 2 then reject
+set firewall family inet6 filter BLOCK-IPV6-INVALIDO-DST term 10 from destination-address 2804:1b50::/32
+set firewall family inet6 filter BLOCK-IPV6-INVALIDO-DST term 10 from destination-address fe80::/10
+set firewall family inet6 filter BLOCK-IPV6-INVALIDO-DST term 10 from destination-address 2804:66ec::/32
+set firewall family inet6 filter BLOCK-IPV6-INVALIDO-DST term 10 then accept
+set firewall family inet6 filter BLOCK-IPV6-INVALIDO-DST term 20 then accept
+set firewall family inet6 filter BLOCK-IPV6-INVALIDO term 10 from source-address 2804:1b50::/32
+set firewall family inet6 filter BLOCK-IPV6-INVALIDO term 10 from source-address fe80::/10
+set firewall family inet6 filter BLOCK-IPV6-INVALIDO term 10 from source-address 2804:66ec::/32
+set firewall family inet6 filter BLOCK-IPV6-INVALIDO term 10 then accept
+---(more 32%)---
+                                        
+set firewall family inet6 filter BLOCK-IPV6-INVALIDO term 20 then accept
+set firewall family inet6 filter BLOCK-IPV6-INVALIDO term 15 from source-address ::/0
+set firewall family inet6 filter BLOCK-IPV6-INVALIDO term 15 from icmp-type-except membership-termination
+set firewall family inet6 filter BLOCK-IPV6-INVALIDO term 15 then accept
+set firewall family inet6 filter filter_bgp6-179 term 1 from source-address 2804:1b50:11::1/126
+set firewall family inet6 filter filter_bgp6-179 term 1 from destination-port bgp
+set firewall family inet6 filter filter_bgp6-179 term 1 then accept
+set firewall family inet6 filter filter_bgp6-179 term 2 then reject
+set firewall policer 250Mbps logical-interface-policer
+set firewall policer 250Mbps if-exceeding bandwidth-limit 250m
+set firewall policer 250Mbps if-exceeding burst-size-limit 300k
+set firewall policer 250Mbps then discard
+set firewall policer 300Mbps logical-interface-policer
+set firewall policer 300Mbps if-exceeding bandwidth-limit 303m
+set firewall policer 300Mbps if-exceeding burst-size-limit 300k
+set firewall policer 300Mbps then discard
+set firewall policer 350Mbps logical-interface-policer
+set firewall policer 350Mbps if-exceeding bandwidth-limit 350m
+set firewall policer 350Mbps if-exceeding burst-size-limit 300k
+---(more 34%)---
+                                        
+set firewall policer 350Mbps then discard
+set firewall policer 600Mbps logical-interface-policer
+set firewall policer 600Mbps if-exceeding bandwidth-limit 600m
+set firewall policer 600Mbps if-exceeding burst-size-limit 300k
+set firewall policer 600Mbps then discard
+set firewall policer 1Mbps logical-interface-policer
+set firewall policer 1Mbps if-exceeding bandwidth-limit 1m
+set firewall policer 1Mbps if-exceeding burst-size-limit 300k
+set firewall policer 1Mbps then discard
+set firewall policer 2Mbps logical-interface-policer
+set firewall policer 2Mbps if-exceeding bandwidth-limit 2m
+set firewall policer 2Mbps if-exceeding burst-size-limit 300k
+set firewall policer 2Mbps then discard
+set firewall policer 3Mbps logical-interface-policer
+set firewall policer 3Mbps if-exceeding bandwidth-limit 3m
+set firewall policer 3Mbps if-exceeding burst-size-limit 300k
+set firewall policer 3Mbps then discard
+set firewall policer 4Mbps logical-interface-policer
+set firewall policer 4Mbps if-exceeding bandwidth-limit 4m
+set firewall policer 4Mbps if-exceeding burst-size-limit 300k
+set firewall policer 4Mbps then discard
+set firewall policer 5Mbps logical-interface-policer
+set firewall policer 5Mbps if-exceeding bandwidth-limit 5m
+---(more 36%)---
+                                        
+set firewall policer 5Mbps if-exceeding burst-size-limit 300k
+set firewall policer 5Mbps then discard
+set firewall policer 6Mbps logical-interface-policer
+set firewall policer 6Mbps if-exceeding bandwidth-limit 6m
+set firewall policer 6Mbps if-exceeding burst-size-limit 300k
+set firewall policer 6Mbps then discard
+set firewall policer 7Mbps logical-interface-policer
+set firewall policer 7Mbps if-exceeding bandwidth-limit 7m
+set firewall policer 7Mbps if-exceeding burst-size-limit 300k
+set firewall policer 7Mbps then discard
+set firewall policer 8Mbps logical-interface-policer
+set firewall policer 8Mbps if-exceeding bandwidth-limit 8m
+set firewall policer 8Mbps if-exceeding burst-size-limit 300k
+set firewall policer 8Mbps then discard
+set firewall policer 9Mbps logical-interface-policer
+set firewall policer 9Mbps if-exceeding bandwidth-limit 9m
+set firewall policer 9Mbps if-exceeding burst-size-limit 300k
+set firewall policer 9Mbps then discard
+set firewall policer 10Mbps logical-interface-policer
+set firewall policer 10Mbps if-exceeding bandwidth-limit 10m
+set firewall policer 10Mbps if-exceeding burst-size-limit 300k
+set firewall policer 10Mbps then discard
+set firewall policer 11Mbps logical-interface-policer
+---(more 38%)---
+                                        
+set firewall policer 11Mbps if-exceeding bandwidth-limit 11m
+set firewall policer 11Mbps if-exceeding burst-size-limit 300k
+set firewall policer 11Mbps then discard
+set firewall policer 12Mbps logical-interface-policer
+set firewall policer 12Mbps if-exceeding bandwidth-limit 12m
+set firewall policer 12Mbps if-exceeding burst-size-limit 300k
+set firewall policer 12Mbps then discard
+set firewall policer 13Mbps logical-interface-policer
+set firewall policer 13Mbps if-exceeding bandwidth-limit 50m
+set firewall policer 13Mbps if-exceeding burst-size-limit 300k
+set firewall policer 13Mbps then discard
+set firewall policer 14Mbps logical-interface-policer
+set firewall policer 14Mbps if-exceeding bandwidth-limit 14m
+set firewall policer 14Mbps if-exceeding burst-size-limit 300k
+set firewall policer 14Mbps then discard
+set firewall policer 15Mbps logical-interface-policer
+set firewall policer 15Mbps if-exceeding bandwidth-limit 15m
+set firewall policer 15Mbps if-exceeding burst-size-limit 300k
+set firewall policer 15Mbps then discard
+set firewall policer 16Mbps logical-interface-policer
+set firewall policer 16Mbps if-exceeding bandwidth-limit 16m
+set firewall policer 16Mbps if-exceeding burst-size-limit 300k
+set firewall policer 16Mbps then discard
+---(more 41%)---
+                                        
+set firewall policer 17Mbps logical-interface-policer
+set firewall policer 17Mbps if-exceeding bandwidth-limit 17m
+set firewall policer 17Mbps if-exceeding burst-size-limit 300k
+set firewall policer 17Mbps then discard
+set firewall policer 18Mbps logical-interface-policer
+set firewall policer 18Mbps if-exceeding bandwidth-limit 18m
+set firewall policer 18Mbps if-exceeding burst-size-limit 300k
+set firewall policer 18Mbps then discard
+set firewall policer 19Mbps logical-interface-policer
+set firewall policer 19Mbps if-exceeding bandwidth-limit 19m
+set firewall policer 19Mbps if-exceeding burst-size-limit 300k
+set firewall policer 19Mbps then discard
+set firewall policer 20Mbps logical-interface-policer
+set firewall policer 20Mbps if-exceeding bandwidth-limit 20m
+set firewall policer 20Mbps if-exceeding burst-size-limit 300k
+set firewall policer 20Mbps then discard
+set firewall policer 22Mbps logical-interface-policer
+set firewall policer 22Mbps if-exceeding bandwidth-limit 22m
+set firewall policer 22Mbps if-exceeding burst-size-limit 300k
+set firewall policer 22Mbps then discard
+set firewall policer 25Mbps logical-interface-policer
+set firewall policer 25Mbps if-exceeding bandwidth-limit 50m
+set firewall policer 25Mbps if-exceeding burst-size-limit 300k
+---(more 43%)---
+                                        
+set firewall policer 25Mbps then discard
+set firewall policer 27Mbps logical-interface-policer
+set firewall policer 27Mbps if-exceeding bandwidth-limit 27m
+set firewall policer 27Mbps if-exceeding burst-size-limit 300k
+set firewall policer 27Mbps then discard
+set firewall policer 30Mbps logical-interface-policer
+set firewall policer 30Mbps if-exceeding bandwidth-limit 30m
+set firewall policer 30Mbps if-exceeding burst-size-limit 300k
+set firewall policer 30Mbps then discard
+set firewall policer 35Mbps logical-interface-policer
+set firewall policer 35Mbps if-exceeding bandwidth-limit 35m
+set firewall policer 35Mbps if-exceeding burst-size-limit 300k
+set firewall policer 35Mbps then discard
+set firewall policer 37Mbps logical-interface-policer
+set firewall policer 37Mbps if-exceeding bandwidth-limit 37m
+set firewall policer 37Mbps if-exceeding burst-size-limit 300k
+set firewall policer 37Mbps then discard
+set firewall policer 40Mbps logical-interface-policer
+set firewall policer 40Mbps if-exceeding bandwidth-limit 40m
+set firewall policer 40Mbps if-exceeding burst-size-limit 300k
+set firewall policer 40Mbps then discard
+set firewall policer 45Mbps logical-interface-policer
+set firewall policer 45Mbps if-exceeding bandwidth-limit 45m
+---(more 45%)---
+                                        
+set firewall policer 45Mbps if-exceeding burst-size-limit 300k
+set firewall policer 45Mbps then discard
+set firewall policer 50Mbps logical-interface-policer
+set firewall policer 50Mbps if-exceeding bandwidth-limit 53m
+set firewall policer 50Mbps if-exceeding burst-size-limit 300k
+set firewall policer 50Mbps then discard
+set firewall policer 55Mbps logical-interface-policer
+set firewall policer 55Mbps if-exceeding bandwidth-limit 55m
+set firewall policer 55Mbps if-exceeding burst-size-limit 300k
+set firewall policer 55Mbps then discard
+set firewall policer 60Mbps logical-interface-policer
+set firewall policer 60Mbps if-exceeding bandwidth-limit 60m
+set firewall policer 60Mbps if-exceeding burst-size-limit 300k
+set firewall policer 60Mbps then discard
+set firewall policer 65Mbps logical-interface-policer
+set firewall policer 65Mbps if-exceeding bandwidth-limit 65m
+set firewall policer 65Mbps if-exceeding burst-size-limit 300k
+set firewall policer 65Mbps then discard
+set firewall policer 75Mbps logical-interface-policer
+set firewall policer 75Mbps if-exceeding bandwidth-limit 78m
+set firewall policer 75Mbps if-exceeding burst-size-limit 300k
+set firewall policer 75Mbps then discard
+set firewall policer 90Mbps logical-interface-policer
+---(more 47%)---
+                                        
+set firewall policer 90Mbps if-exceeding bandwidth-limit 90m
+set firewall policer 90Mbps if-exceeding burst-size-limit 300k
+set firewall policer 90Mbps then discard
+set firewall policer 100Mbps logical-interface-policer
+set firewall policer 100Mbps if-exceeding bandwidth-limit 103m
+set firewall policer 100Mbps if-exceeding burst-size-limit 300k
+set firewall policer 100Mbps then discard
+set firewall policer 120Mbps logical-interface-policer
+set firewall policer 120Mbps if-exceeding bandwidth-limit 120m
+set firewall policer 120Mbps if-exceeding burst-size-limit 300k
+set firewall policer 120Mbps then discard
+set firewall policer 150Mbps logical-interface-policer
+set firewall policer 150Mbps if-exceeding bandwidth-limit 150m
+set firewall policer 150Mbps if-exceeding burst-size-limit 300k
+set firewall policer 150Mbps then discard
+set firewall policer 170Mbps logical-interface-policer
+set firewall policer 170Mbps if-exceeding bandwidth-limit 170m
+set firewall policer 170Mbps if-exceeding burst-size-limit 300k
+set firewall policer 170Mbps then discard
+set firewall policer 200Mbps logical-interface-policer
+set firewall policer 200Mbps if-exceeding bandwidth-limit 300m
+set firewall policer 200Mbps if-exceeding burst-size-limit 300k
+set firewall policer 200Mbps then discard
+---(more 49%)---
+                                        
+set firewall policer 400Mbps logical-interface-policer
+set firewall policer 400Mbps if-exceeding bandwidth-limit 403m
+set firewall policer 400Mbps if-exceeding burst-size-limit 300k
+set firewall policer 400Mbps then discard
+set firewall policer 450Mbps logical-interface-policer
+set firewall policer 450Mbps if-exceeding bandwidth-limit 450m
+set firewall policer 450Mbps if-exceeding burst-size-limit 300k
+set firewall policer 450Mbps then discard
+set firewall policer 500Mbps logical-interface-policer
+set firewall policer 500Mbps if-exceeding bandwidth-limit 503m
+set firewall policer 500Mbps if-exceeding burst-size-limit 300k
+set firewall policer 500Mbps then discard
+set firewall policer 550Mbps logical-interface-policer
+set firewall policer 550Mbps if-exceeding bandwidth-limit 550m
+set firewall policer 550Mbps if-exceeding burst-size-limit 300k
+set firewall policer 550Mbps then discard
+set firewall policer 650Mbps logical-interface-policer
+set firewall policer 650Mbps if-exceeding bandwidth-limit 650m
+set firewall policer 650Mbps if-exceeding burst-size-limit 300k
+set firewall policer 650Mbps then discard
+set firewall policer 700Mbps logical-interface-policer
+set firewall policer 700Mbps if-exceeding bandwidth-limit 700m
+set firewall policer 700Mbps if-exceeding burst-size-limit 300k
+---(more 52%)---
+                                        
+set firewall policer 700Mbps then discard
+set firewall policer 750Mbps logical-interface-policer
+set firewall policer 750Mbps if-exceeding bandwidth-limit 750m
+set firewall policer 750Mbps if-exceeding burst-size-limit 300k
+set firewall policer 750Mbps then discard
+set firewall policer 800Mbps logical-interface-policer
+set firewall policer 800Mbps if-exceeding bandwidth-limit 800m
+set firewall policer 800Mbps if-exceeding burst-size-limit 300k
+set firewall policer 800Mbps then discard
+set firewall policer 850Mbps logical-interface-policer
+set firewall policer 850Mbps if-exceeding bandwidth-limit 850m
+set firewall policer 850Mbps if-exceeding burst-size-limit 300k
+set firewall policer 850Mbps then discard
+set firewall policer 900Mbps logical-interface-policer
+set firewall policer 900Mbps if-exceeding bandwidth-limit 900m
+set firewall policer 900Mbps if-exceeding burst-size-limit 300k
+set firewall policer 900Mbps then discard
+set firewall policer 950Mbps logical-interface-policer
+set firewall policer 950Mbps if-exceeding bandwidth-limit 950m
+set firewall policer 950Mbps if-exceeding burst-size-limit 300k
+set firewall policer 950Mbps then discard
+set firewall policer 1Gbps logical-interface-policer
+set firewall policer 1Gbps if-exceeding bandwidth-limit 1024000000
+---(more 54%)---
+                                        
+set firewall policer 1Gbps if-exceeding burst-size-limit 300k
+set firewall policer 1Gbps then discard
+set firewall policer 175Mbps logical-interface-policer
+set firewall policer 175Mbps if-exceeding bandwidth-limit 175m
+set firewall policer 175Mbps if-exceeding burst-size-limit 300k
+set firewall policer 175Mbps then discard
+set firewall policer 360Mbps logical-interface-policer
+set firewall policer 360Mbps if-exceeding bandwidth-limit 360m
+set firewall policer 360Mbps if-exceeding burst-size-limit 300k
+set firewall policer 360Mbps then discard
+set firewall policer 800Kbps logical-interface-policer
+set firewall policer 800Kbps if-exceeding bandwidth-limit 800k
+set firewall policer 800Kbps if-exceeding burst-size-limit 100k
+set firewall policer 800Kbps then discard
+set firewall policer 180Mbps logical-interface-policer
+set firewall policer 180Mbps if-exceeding bandwidth-limit 180m
+set firewall policer 180Mbps if-exceeding burst-size-limit 300k
+set firewall policer 180Mbps then discard
+set firewall policer FIBRA-PLUS-ILIMITADO logical-interface-policer
+set firewall policer FIBRA-PLUS-ILIMITADO if-exceeding bandwidth-limit 1g
+set firewall policer FIBRA-PLUS-ILIMITADO if-exceeding burst-size-limit 300k
+set firewall policer FIBRA-PLUS-ILIMITADO then discard
+set firewall policer PROTECT-BORDA if-exceeding bandwidth-limit 768k
+---(more 56%)---
+                                        
+set firewall policer PROTECT-BORDA if-exceeding burst-size-limit 625k
+set firewall policer PROTECT-BORDA then discard
+deactivate firewall policer PROTECT-BORDA
+set firewall filter 250M-INGRESS-POLICY-NAME interface-specific
+set firewall filter 250M-INGRESS-POLICY-NAME term POLICER then policer 250Mbps
+set firewall filter 250M-INGRESS-POLICY-NAME term POLICER then accept
+set firewall filter 250M-EGRESS-POLICY-NAME interface-specific
+set firewall filter 250M-EGRESS-POLICY-NAME term POLICER then policer 250Mbps
+set firewall filter 250M-EGRESS-POLICY-NAME term POLICER then accept
+set firewall filter 250M-IPV6-INGRESS-POLICY-NAME interface-specific
+set firewall filter 250M-IPV6-INGRESS-POLICY-NAME term POLICER then policer 250Mbps
+set firewall filter 250M-IPV6-INGRESS-POLICY-NAME term POLICER then accept
+set firewall filter 250M-IPV6-EGRESS-POLICY-NAME interface-specific
+set firewall filter 250M-IPV6-EGRESS-POLICY-NAME term POLICER then policer 250Mbps
+set firewall filter 250M-IPV6-EGRESS-POLICY-NAME term POLICER then accept
+set firewall filter 300M-INGRESS-POLICY-NAME interface-specific
+set firewall filter 300M-INGRESS-POLICY-NAME term POLICER then policer 350Mbps
+set firewall filter 300M-INGRESS-POLICY-NAME term POLICER then accept
+set firewall filter 300M-EGRESS-POLICY-NAME interface-specific
+set firewall filter 300M-EGRESS-POLICY-NAME term POLICER then policer 350Mbps
+set firewall filter 300M-EGRESS-POLICY-NAME term POLICER then accept
+---(more 58%)---
+                                        
+set firewall filter 300M-IPV6-INGRESS-POLICY-NAME interface-specific
+set firewall filter 300M-IPV6-INGRESS-POLICY-NAME term POLICER then policer 350Mbps
+set firewall filter 300M-IPV6-INGRESS-POLICY-NAME term POLICER then accept
+set firewall filter 300M-IPV6-EGRESS-POLICY-NAME interface-specific
+set firewall filter 300M-IPV6-EGRESS-POLICY-NAME term POLICER then policer 350Mbps
+set firewall filter 300M-IPV6-EGRESS-POLICY-NAME term POLICER then accept
+set firewall filter 600M-INGRESS-POLICY-NAME interface-specific
+set firewall filter 600M-INGRESS-POLICY-NAME term POLICER then policer 600Mbps
+set firewall filter 600M-INGRESS-POLICY-NAME term POLICER then accept
+set firewall filter 600M-EGRESS-POLICY-NAME interface-specific
+set firewall filter 600M-EGRESS-POLICY-NAME term POLICER then policer 600Mbps
+set firewall filter 600M-EGRESS-POLICY-NAME term POLICER then accept
+set firewall filter 600M-IPV6-INGRESS-POLICY-NAME interface-specific
+set firewall filter 600M-IPV6-INGRESS-POLICY-NAME term POLICER then policer 600Mbps
+set firewall filter 600M-IPV6-INGRESS-POLICY-NAME term POLICER then accept
+set firewall filter 600M-IPV6-EGRESS-POLICY-NAME interface-specific
+set firewall filter 600M-IPV6-EGRESS-POLICY-NAME term POLICER then policer 600Mbps
+set firewall filter 600M-IPV6-EGRESS-POLICY-NAME term POLICER then accept
+set firewall filter "CLICKNET FIBRA EMPRESARIAL 300 MEGAS" interface-specific
+---(more 60%)---
+                                        
+set firewall filter "CLICKNET FIBRA EMPRESARIAL 300 MEGAS" term POLICER then policer 300Mbps
+set firewall filter CLICKNET-FIBRA-EMPRESARIAL-300-MEGAS interface-specific
+set firewall filter CLICKNET-FIBRA-EMPRESARIAL-300-MEGAS term POLICER then policer 300Mbps
+set firewall filter CLICKNET-FIBRA-EMPRESARIAL-300-MEGAS term POLICER then accept
+set firewall filter 25M-INGRESS-POLICY-NAME interface-specific
+set firewall filter 25M-INGRESS-POLICY-NAME term POLICER then policer 13Mbps
+set firewall filter 25M-INGRESS-POLICY-NAME term POLICER then accept
+set firewall filter 25M-EGRESS-POLICY-NAME interface-specific
+set firewall filter 25M-EGRESS-POLICY-NAME term POLICER then policer 25Mbps
+set firewall filter 25M-EGRESS-POLICY-NAME term POLICER then accept
+set firewall filter 25M-IPV6-INGRESS-POLICY-NAME interface-specific
+set firewall filter 25M-IPV6-INGRESS-POLICY-NAME term POLICER then policer 13Mbps
+set firewall filter 25M-IPV6-INGRESS-POLICY-NAME term POLICER then accept
+set firewall filter 25M-IPV6-EGRESS-POLICY-NAME interface-specific
+set firewall filter 25M-IPV6-EGRESS-POLICY-NAME term POLICER then policer 25Mbps
+set firewall filter 25M-IPV6-EGRESS-POLICY-NAME term POLICER then accept
+set firewall filter 100M-INGRESS-POLICY-NAME interface-specific
+set firewall filter 100M-INGRESS-POLICY-NAME term POLICER then policer 250Mbps
+set firewall filter 100M-INGRESS-POLICY-NAME term POLICER then accept
+---(more 62%)---
+                                        
+set firewall filter 100M-EGRESS-POLICY-NAME interface-specific
+set firewall filter 100M-EGRESS-POLICY-NAME term POLICER then policer 250Mbps
+set firewall filter 100M-EGRESS-POLICY-NAME term POLICER then accept
+set firewall filter 100M-IPV6-INGRESS-POLICY-NAME interface-specific
+set firewall filter 100M-IPV6-INGRESS-POLICY-NAME term POLICER then policer 250Mbps
+set firewall filter 100M-IPV6-INGRESS-POLICY-NAME term POLICER then accept
+set firewall filter 100M-IPV6-EGRESS-POLICY-NAME interface-specific
+set firewall filter 100M-IPV6-EGRESS-POLICY-NAME term POLICER then policer 250Mbps
+set firewall filter 100M-IPV6-EGRESS-POLICY-NAME term POLICER then accept
+set firewall filter 200M-INGRESS-POLICY-NAME interface-specific
+set firewall filter 200M-INGRESS-POLICY-NAME term POLICER then policer 250Mbps
+set firewall filter 200M-INGRESS-POLICY-NAME term POLICER then accept
+set firewall filter 200M-EGRESS-POLICY-NAME interface-specific
+set firewall filter 200M-EGRESS-POLICY-NAME term POLICER then policer 250Mbps
+set firewall filter 200M-EGRESS-POLICY-NAME term POLICER then accept
+set firewall filter 200M-IPV6-INGRESS-POLICY-NAME interface-specific
+set firewall filter 200M-IPV6-INGRESS-POLICY-NAME term POLICER then policer 250Mbps
+set firewall filter 200M-IPV6-INGRESS-POLICY-NAME term POLICER then accept
+set firewall filter 200M-IPV6-EGRESS-POLICY-NAME interface-specific
+---(more 64%)---
+                                        
+set firewall filter 200M-IPV6-EGRESS-POLICY-NAME term POLICER then policer 250Mbps
+set firewall filter 200M-IPV6-EGRESS-POLICY-NAME term POLICER then accept
+set firewall filter 350M-INGRESS-POLICY-NAME interface-specific
+set firewall filter 350M-INGRESS-POLICY-NAME term POLICER then policer 550Mbps
+set firewall filter 350M-INGRESS-POLICY-NAME term POLICER then accept
+set firewall filter 350M-EGRESS-POLICY-NAME interface-specific
+set firewall filter 350M-EGRESS-POLICY-NAME term POLICER then policer 550Mbps
+set firewall filter 350M-EGRESS-POLICY-NAME term POLICER then accept
+set firewall filter 350M-IPV6-INGRESS-POLICY-NAME interface-specific
+set firewall filter 350M-IPV6-INGRESS-POLICY-NAME term POLICER then policer 550Mbps
+set firewall filter 350M-IPV6-INGRESS-POLICY-NAME term POLICER then accept
+set firewall filter 350M-IPV6-EGRESS-POLICY-NAME interface-specific
+set firewall filter 350M-IPV6-EGRESS-POLICY-NAME term POLICER then policer 550Mbps
+set firewall filter 350M-IPV6-EGRESS-POLICY-NAME term POLICER then accept
+set firewall filter 360M-INGRESS-POLICY-NAME interface-specific
+set firewall filter 360M-INGRESS-POLICY-NAME term POLICER then policer 360Mbps
+set firewall filter 360M-INGRESS-POLICY-NAME term POLICER then accept
+set firewall filter 360M-EGRESS-POLICY-NAME interface-specific
+set firewall filter 360M-EGRESS-POLICY-NAME term POLICER then policer 360Mbps
+set firewall filter 360M-EGRESS-POLICY-NAME term POLICER then accept
+---(more 66%)---
+                                        
+set firewall filter 360M-IPV6-INGRESS-POLICY-NAME interface-specific
+set firewall filter 360M-IPV6-INGRESS-POLICY-NAME term POLICER then policer 360Mbps
+set firewall filter 360M-IPV6-INGRESS-POLICY-NAME term POLICER then accept
+set firewall filter 360M-IPV6-EGRESS-POLICY-NAME interface-specific
+set firewall filter 360M-IPV6-EGRESS-POLICY-NAME term POLICER then policer 360Mbps
+set firewall filter 360M-IPV6-EGRESS-POLICY-NAME term POLICER then accept
+set firewall filter 25M-R-INGRESS-POLICY-NAME interface-specific
+set firewall filter 25M-R-INGRESS-POLICY-NAME term POLICER then policer 50Mbps
+set firewall filter 25M-R-INGRESS-POLICY-NAME term POLICER then accept
+set firewall filter 25M-R-EGRESS-POLICY-NAME interface-specific
+set firewall filter 25M-R-EGRESS-POLICY-NAME term POLICER then policer 25Mbps
+set firewall filter 25M-R-EGRESS-POLICY-NAME term POLICER then accept
+set firewall filter 25M-R-IPV6-INGRESS-POLICY-NAME interface-specific
+set firewall filter 25M-R-IPV6-INGRESS-POLICY-NAME term POLICER then policer 50Mbps
+set firewall filter 25M-R-IPV6-INGRESS-POLICY-NAME term POLICER then accept
+set firewall filter 25M-R-IPV6-EGRESS-POLICY-NAME interface-specific
+set firewall filter 25M-R-IPV6-EGRESS-POLICY-NAME term POLICER then policer 25Mbps
+set firewall filter 25M-R-IPV6-EGRESS-POLICY-NAME term POLICER then accept
+set firewall filter 100M-R-INGRESS-POLICY-NAME interface-specific
+---(more 67%)---
+                                        
+set firewall filter 100M-R-INGRESS-POLICY-NAME term POLICER then policer 100Mbps
+set firewall filter 100M-R-INGRESS-POLICY-NAME term POLICER then accept
+set firewall filter 100M-R-EGRESS-POLICY-NAME interface-specific
+set firewall filter 100M-R-EGRESS-POLICY-NAME term POLICER then policer 100Mbps
+set firewall filter 100M-R-EGRESS-POLICY-NAME term POLICER then accept
+set firewall filter 100M-R-IPV6-INGRESS-POLICY-NAME interface-specific
+set firewall filter 100M-R-IPV6-INGRESS-POLICY-NAME term POLICER then policer 250Mbps
+set firewall filter 100M-R-IPV6-INGRESS-POLICY-NAME term POLICER then accept
+set firewall filter 100M-R-IPV6-EGRESS-POLICY-NAME interface-specific
+set firewall filter 100M-R-IPV6-EGRESS-POLICY-NAME term POLICER then policer 250Mbps
+set firewall filter 100M-R-IPV6-EGRESS-POLICY-NAME term POLICER then accept
+set firewall filter 200M-R-INGRESS-POLICY-NAME interface-specific
+set firewall filter 200M-R-INGRESS-POLICY-NAME term POLICER then policer 250Mbps
+set firewall filter 200M-R-INGRESS-POLICY-NAME term POLICER then accept
+set firewall filter 200M-R-EGRESS-POLICY-NAME interface-specific
+set firewall filter 200M-R-EGRESS-POLICY-NAME term POLICER then policer 250Mbps
+set firewall filter 200M-R-EGRESS-POLICY-NAME term POLICER then accept
+set firewall filter 200M-R-IPV6-INGRESS-POLICY-NAME interface-specific
+set firewall filter 200M-R-IPV6-INGRESS-POLICY-NAME term POLICER then policer 250Mbps
+set firewall filter 200M-R-IPV6-INGRESS-POLICY-NAME term POLICER then accept
+---(more 69%)---
+                                        
+set firewall filter 200M-R-IPV6-EGRESS-POLICY-NAME interface-specific
+set firewall filter 200M-R-IPV6-EGRESS-POLICY-NAME term POLICER then policer 250Mbps
+set firewall filter 200M-R-IPV6-EGRESS-POLICY-NAME term POLICER then accept
+set firewall filter 60M-D-INGRESS-POLICY-NAME interface-specific
+set firewall filter 60M-D-INGRESS-POLICY-NAME term POLICER then policer 60Mbps
+set firewall filter 60M-D-INGRESS-POLICY-NAME term POLICER then accept
+set firewall filter 60M-D-EGRESS-POLICY-NAME interface-specific
+set firewall filter 60M-D-EGRESS-POLICY-NAME term POLICER then policer 60Mbps
+set firewall filter 60M-D-EGRESS-POLICY-NAME term POLICER then accept
+set firewall filter 60M-D-IPV6-INGRESS-POLICY-NAME interface-specific
+set firewall filter 60M-D-IPV6-INGRESS-POLICY-NAME term POLICER then policer 60Mbps
+set firewall filter 60M-D-IPV6-INGRESS-POLICY-NAME term POLICER then accept
+set firewall filter 60M-D-IPV6-EGRESS-POLICY-NAME interface-specific
+set firewall filter 60M-D-IPV6-EGRESS-POLICY-NAME term POLICER then policer 60Mbps
+set firewall filter 60M-D-IPV6-EGRESS-POLICY-NAME term POLICER then accept
+set firewall filter 50M-E-INGRESS-POLICY-NAME interface-specific
+set firewall filter 50M-E-INGRESS-POLICY-NAME term POLICER then policer 6Mbps
+set firewall filter 50M-E-INGRESS-POLICY-NAME term POLICER then accept
+set firewall filter 50M-E-EGRESS-POLICY-NAME interface-specific
+set firewall filter 50M-E-EGRESS-POLICY-NAME term POLICER then policer 50Mbps
+---(more 71%)---
+                                        
+set firewall filter 50M-E-EGRESS-POLICY-NAME term POLICER then accept
+set firewall filter 50M-E-IPV6-INGRESS-POLICY-NAME interface-specific
+set firewall filter 50M-E-IPV6-INGRESS-POLICY-NAME term POLICER then policer 6Mbps
+set firewall filter 50M-E-IPV6-INGRESS-POLICY-NAME term POLICER then accept
+set firewall filter 50M-E-IPV6-EGRESS-POLICY-NAME interface-specific
+set firewall filter 50M-E-IPV6-EGRESS-POLICY-NAME term POLICER then policer 50Mbps
+set firewall filter 50M-E-IPV6-EGRESS-POLICY-NAME term POLICER then accept
+set firewall filter 100M-PRF-IPV6-INGRESS-POLICY-NAME interface-specific
+set firewall filter 100M-PRF-IPV6-INGRESS-POLICY-NAME term POLICER then policer 250Mbps
+set firewall filter 100M-PRF-IPV6-INGRESS-POLICY-NAME term POLICER then accept
+set firewall filter 100M-PRF-IPV6-EGRESS-POLICY-NAME interface-specific
+set firewall filter 100M-PRF-IPV6-EGRESS-POLICY-NAME term POLICER then policer 250Mbps
+set firewall filter 100M-PRF-IPV6-EGRESS-POLICY-NAME term POLICER then accept
+set firewall filter 4M-INGRESS-POLICY-NAME interface-specific
+set firewall filter 4M-INGRESS-POLICY-NAME term POLICER then policer 800Kbps
+set firewall filter 4M-INGRESS-POLICY-NAME term POLICER then accept
+set firewall filter 4M-EGRESS-POLICY-NAME interface-specific
+set firewall filter 4M-EGRESS-POLICY-NAME term POLICER then policer 4Mbps
+set firewall filter 4M-EGRESS-POLICY-NAME term POLICER then accept
+---(more 73%)---
+                                        
+set firewall filter 4M-IPV6-INGRESS-POLICY-NAME interface-specific
+set firewall filter 4M-IPV6-INGRESS-POLICY-NAME term POLICER then policer 800Kbps
+set firewall filter 4M-IPV6-INGRESS-POLICY-NAME term POLICER then accept
+set firewall filter 100M-PRF-INGRESS-POLICY-NAME interface-specific
+set firewall filter 100M-PRF-INGRESS-POLICY-NAME term POLICER then policer 250Mbps
+set firewall filter 100M-PRF-INGRESS-POLICY-NAME term POLICER then accept
+set firewall filter 100M-PRF-EGRESS-POLICY-NAME interface-specific
+set firewall filter 100M-PRF-EGRESS-POLICY-NAME term POLICER then policer 250Mbps
+set firewall filter 100M-PRF-EGRESS-POLICY-NAME term POLICER then accept
+set firewall filter 4M-IPV6-EGRESS-POLICY-NAME interface-specific
+set firewall filter 4M-IPV6-EGRESS-POLICY-NAME term POLICER then policer 4Mbps
+set firewall filter 4M-IPV6-EGRESS-POLICY-NAME term POLICER then accept
+set firewall filter 5M-INGRESS-POLICY-NAME interface-specific
+set firewall filter 5M-INGRESS-POLICY-NAME term POLICER then policer 800Kbps
+set firewall filter 5M-INGRESS-POLICY-NAME term POLICER then accept
+set firewall filter 5M-EGRESS-POLICY-NAME interface-specific
+set firewall filter 5M-EGRESS-POLICY-NAME term POLICER then policer 5Mbps
+set firewall filter 5M-EGRESS-POLICY-NAME term POLICER then accept
+set firewall filter 5M-IPV6-INGRESS-POLICY-NAME interface-specific
+---(more 75%)---
+                                        
+set firewall filter 5M-IPV6-INGRESS-POLICY-NAME term POLICER then policer 800Kbps
+set firewall filter 5M-IPV6-INGRESS-POLICY-NAME term POLICER then accept
+set firewall filter 5M-IPV6-EGRESS-POLICY-NAME interface-specific
+set firewall filter 5M-IPV6-EGRESS-POLICY-NAME term POLICER then policer 5Mbps
+set firewall filter 5M-IPV6-EGRESS-POLICY-NAME term POLICER then accept
+set firewall filter 6M-INGRESS-POLICY-NAME interface-specific
+set firewall filter 6M-INGRESS-POLICY-NAME term POLICER then policer 1Mbps
+set firewall filter 6M-INGRESS-POLICY-NAME term POLICER then accept
+set firewall filter 6M-EGRESS-POLICY-NAME interface-specific
+set firewall filter 6M-EGRESS-POLICY-NAME term POLICER then policer 6Mbps
+set firewall filter 6M-EGRESS-POLICY-NAME term POLICER then accept
+set firewall filter 6M-IPV6-INGRESS-POLICY-NAME interface-specific
+set firewall filter 6M-IPV6-INGRESS-POLICY-NAME term POLICER then policer 1Mbps
+set firewall filter 6M-IPV6-INGRESS-POLICY-NAME term POLICER then accept
+set firewall filter 6M-IPV6-EGRESS-POLICY-NAME interface-specific
+set firewall filter 6M-IPV6-EGRESS-POLICY-NAME term POLICER then policer 6Mbps
+set firewall filter 6M-IPV6-EGRESS-POLICY-NAME term POLICER then accept
+set firewall filter 10M-INGRESS-POLICY-NAME interface-specific
+set firewall filter 10M-INGRESS-POLICY-NAME term POLICER then policer 10Mbps
+set firewall filter 10M-INGRESS-POLICY-NAME term POLICER then accept
+set firewall filter 10M-EGRESS-POLICY-NAME interface-specific
+set firewall filter 10M-EGRESS-POLICY-NAME term POLICER then policer 10Mbps
+---(more 77%)---
+                                        
+set firewall filter 10M-EGRESS-POLICY-NAME term POLICER then accept
+set firewall filter 10M-IPV6-INGRESS-POLICY-NAME interface-specific
+set firewall filter 10M-IPV6-INGRESS-POLICY-NAME term POLICER then policer 10Mbps
+set firewall filter 10M-IPV6-INGRESS-POLICY-NAME term POLICER then accept
+set firewall filter 10M-IPV6-EGRESS-POLICY-NAME interface-specific
+set firewall filter 10M-IPV6-EGRESS-POLICY-NAME term POLICER then policer 10Mbps
+set firewall filter 10M-IPV6-EGRESS-POLICY-NAME term POLICER then accept
+set firewall filter 15M-INGRESS-POLICY-NAME interface-specific
+set firewall filter 15M-INGRESS-POLICY-NAME term POLICER then policer 15Mbps
+set firewall filter 15M-INGRESS-POLICY-NAME term POLICER then accept
+set firewall filter 15M-EGRESS-POLICY-NAME interface-specific
+set firewall filter 15M-EGRESS-POLICY-NAME term POLICER then policer 15Mbps
+set firewall filter 15M-EGRESS-POLICY-NAME term POLICER then accept
+set firewall filter 15M-IPV6-INGRESS-POLICY-NAME interface-specific
+set firewall filter 15M-IPV6-INGRESS-POLICY-NAME term POLICER then policer 15Mbps
+set firewall filter 15M-IPV6-INGRESS-POLICY-NAME term POLICER then accept
+set firewall filter 15M-IPV6-EGRESS-POLICY-NAME interface-specific
+set firewall filter 15M-IPV6-EGRESS-POLICY-NAME term POLICER then policer 15Mbps
+set firewall filter 15M-IPV6-EGRESS-POLICY-NAME term POLICER then accept
+set firewall filter 20M-INGRESS-POLICY-NAME interface-specific
+set firewall filter 20M-INGRESS-POLICY-NAME term POLICER then policer 20Mbps
+---(more 79%)---
+                                        
+set firewall filter 20M-INGRESS-POLICY-NAME term POLICER then accept
+set firewall filter 20M-EGRESS-POLICY-NAME interface-specific
+set firewall filter 20M-EGRESS-POLICY-NAME term POLICER then policer 20Mbps
+set firewall filter 20M-EGRESS-POLICY-NAME term POLICER then accept
+set firewall filter 20M-IPV6-INGRESS-POLICY-NAME interface-specific
+set firewall filter 20M-IPV6-INGRESS-POLICY-NAME term POLICER then policer 20Mbps
+set firewall filter 20M-IPV6-INGRESS-POLICY-NAME term POLICER then accept
+set firewall filter 20M-IPV6-EGRESS-POLICY-NAME interface-specific
+set firewall filter 20M-IPV6-EGRESS-POLICY-NAME term POLICER then policer 20Mbps
+set firewall filter 20M-IPV6-EGRESS-POLICY-NAME term POLICER then accept
+set firewall filter CLICKNET-FIBRA-1-GIGA interface-specific
+set firewall filter CLICKNET-FIBRA-1-GIGA term POLICER then policer 1Gbps
+set firewall filter CLICKNET-FIBRA-1-GIGA term POLICER then accept
+set firewall filter FIBRA-PLUS-ILIMITADO interface-specific
+set firewall filter FIBRA-PLUS-ILIMITADO term POLICER then policer 1Gbps
+set firewall filter FIBRA-PLUS-ILIMITADO term POLICER then accept
+set firewall filter 1Gb-INGRESS-POLICY-NAME interface-specific
+set firewall filter 1Gb-INGRESS-POLICY-NAME term POLICER then policer FIBRA-PLUS-ILIMITADO
+set firewall filter 1Gb-INGRESS-POLICY-NAME term POLICER then accept
+set firewall filter 1Gb-EGRESS-POLICY-NAME interface-specific
+---(more 81%)---
+                                        
+set firewall filter 1Gb-EGRESS-POLICY-NAME term POLICER then policer FIBRA-PLUS-ILIMITADO
+set firewall filter 1Gb-EGRESS-POLICY-NAME term POLICER then accept
+set firewall filter 1Gb-IPV6-INGRESS-POLICY-NAME interface-specific
+set firewall filter 1Gb-IPV6-INGRESS-POLICY-NAME term POLICER then policer FIBRA-PLUS-ILIMITADO
+set firewall filter 1Gb-IPV6-INGRESS-POLICY-NAME term POLICER then accept
+set firewall filter 1Gb-IPV6-EGRESS-POLICY-NAME interface-specific
+set firewall filter 1Gb-IPV6-EGRESS-POLICY-NAME term POLICER then policer FIBRA-PLUS-ILIMITADO
+set firewall filter 1Gb-IPV6-EGRESS-POLICY-NAME term POLICER then accept
+set firewall filter 550M-INGRESS-POLICY-NAME interface-specific
+set firewall filter 550M-INGRESS-POLICY-NAME term POLICER then policer 550Mbps
+set firewall filter 550M-INGRESS-POLICY-NAME term POLICER then accept
+set firewall filter 550M-EGRESS-POLICY-NAME interface-specific
+set firewall filter 550M-EGRESS-POLICY-NAME term POLICER then policer 550Mbps
+set firewall filter 550M-EGRESS-POLICY-NAME term POLICER then accept
+set firewall filter 550M-IPV6-INGRESS-POLICY-NAME interface-specific
+set firewall filter 550M-IPV6-INGRESS-POLICY-NAME term POLICER then policer 550Mbps
+set firewall filter 550M-IPV6-INGRESS-POLICY-NAME term POLICER then accept
+set firewall filter 550M-IPV6-EGRESS-POLICY-NAME interface-specific
+---(more 83%)---
+                                        
+set firewall filter 550M-IPV6-EGRESS-POLICY-NAME term POLICER then policer 550Mbps
+set firewall filter 550M-IPV6-EGRESS-POLICY-NAME term POLICER then accept
+set firewall filter 50M-D-INGRESS-POLICY-NAME interface-specific
+set firewall filter 50M-D-INGRESS-POLICY-NAME term POLICER then policer 50Mbps
+set firewall filter 50M-D-INGRESS-POLICY-NAME term POLICER then accept
+set firewall filter 50M-D-EGRESS-POLICY-NAME interface-specific
+set firewall filter 50M-D-EGRESS-POLICY-NAME term POLICER then policer 50Mbps
+set firewall filter 50M-D-EGRESS-POLICY-NAME term POLICER then accept
+set firewall filter 50M-D-IPV6-INGRESS-POLICY-NAME interface-specific
+set firewall filter 50M-D-IPV6-INGRESS-POLICY-NAME term POLICER then policer 50Mbps
+set firewall filter 50M-D-IPV6-INGRESS-POLICY-NAME term POLICER then accept
+set firewall filter 50M-D-IPV6-EGRESS-POLICY-NAME interface-specific
+set firewall filter 50M-D-IPV6-EGRESS-POLICY-NAME term POLICER then policer 50Mbps
+set firewall filter 50M-D-IPV6-EGRESS-POLICY-NAME term POLICER then accept
+set firewall filter 120M-INGRESS-POLICY-NAME interface-specific
+set firewall filter 120M-INGRESS-POLICY-NAME term POLICER then policer 120Mbps
+set firewall filter 120M-INGRESS-POLICY-NAME term POLICER then accept
+set firewall filter 120M-EGRESS-POLICY-NAME interface-specific
+set firewall filter 120M-EGRESS-POLICY-NAME term POLICER then policer 120Mbps
+set firewall filter 120M-EGRESS-POLICY-NAME term POLICER then accept
+---(more 85%)---
+                                        
+set firewall filter 120M-IPV6-INGRESS-POLICY-NAME interface-specific
+set firewall filter 120M-IPV6-INGRESS-POLICY-NAME term POLICER then policer 120Mbps
+set firewall filter 120M-IPV6-INGRESS-POLICY-NAME term POLICER then accept
+set firewall filter 120M-IPV6-EGRESS-POLICY-NAME interface-specific
+set firewall filter 120M-IPV6-EGRESS-POLICY-NAME term POLICER then policer 120Mbps
+set firewall filter 120M-IPV6-EGRESS-POLICY-NAME term POLICER then accept
+set firewall filter 800M-INGRESS-POLICY-NAME interface-specific
+set firewall filter 800M-INGRESS-POLICY-NAME term POLICER then policer 800Mbps
+set firewall filter 800M-INGRESS-POLICY-NAME term POLICER then accept
+set firewall filter 800M-EGRESS-POLICY-NAME interface-specific
+set firewall filter 800M-EGRESS-POLICY-NAME term POLICER then policer 800Mbps
+set firewall filter 800M-EGRESS-POLICY-NAME term POLICER then accept
+set firewall filter 800M-IPV6-INGRESS-POLICY-NAME interface-specific
+set firewall filter 800M-IPV6-INGRESS-POLICY-NAME term POLICER then policer 800Mbps
+set firewall filter 800M-IPV6-INGRESS-POLICY-NAME term POLICER then accept
+set firewall filter 800M-IPV6-EGRESS-POLICY-NAME interface-specific
+set firewall filter 800M-IPV6-EGRESS-POLICY-NAME term POLICER then policer 800Mbps
+set firewall filter 800M-IPV6-EGRESS-POLICY-NAME term POLICER then accept
+set access radius-server 45.189.140.18 port 1812
+---(more 86%)---
+                                        
+set access radius-server 45.189.140.18 accounting-port 1813
+set access radius-server 45.189.140.18 secret "$9$Ba-1Rcev8VwgM8gaZUmPAp0OhrvWX7NbreYo"
+set access radius-server 45.189.140.18 timeout 6
+set access radius-server 45.189.140.18 retry 10
+set access radius-server 45.189.140.18 source-address 45.189.140.13
+set access radius-disconnect-port 3799
+set access radius-disconnect 45.189.140.18 secret "$9$84eLx-s2oikPgoPTz3pulKMWNb24JGUHbs.5"
+set access domain-name-server 8.8.8.8
+set access domain-name-server 8.8.4.4
+set access domain-name-server-inet6 2001:4860:4860::8888
+set access domain-name-server-inet6 2001:4860:4860::8844
+set access profile aaa authentication-order radius
+set access profile aaa radius authentication-server 45.189.140.18
+set access profile aaa radius accounting-server 45.189.140.18
+set access profile aaa radius options nas-port-extended-format slot-width 4
+set access profile aaa radius options nas-port-extended-format adapter-width 1
+set access profile aaa radius options nas-port-extended-format port-width 3
+set access profile aaa radius options nas-port-extended-format vlan-width 16
+set access profile aaa radius options nas-port-type ethernet xdsl
+set access profile aaa radius options calling-station-id-delimiter :
+set access profile aaa radius options revert-interval 1200
+---(more 88%)---
+                                        
+set access profile aaa accounting order radius
+set access profile aaa accounting accounting-stop-on-access-deny
+set access profile aaa accounting coa-immediate-update
+set access profile aaa accounting update-interval 10
+set access profile aaa accounting statistics volume-time
+set access address-assignment neighbor-discovery-router-advertisement v6-ia-na-pool
+set access address-assignment pool v6-prefix-pool-01 family inet6 prefix 2804:66ec:80::/41
+set access address-assignment pool v6-prefix-pool-01 family inet6 range prefix-range prefix-length 56
+set access address-assignment pool v6-prefix-ndra family inet6 prefix 2804:66ec:100::/41
+set access address-assignment pool v6-prefix-ndra family inet6 range range-prefix prefix-length 64
+set access address-assignment pool v6-ia-na-pool family inet6 prefix 2804:66ec:180::/64
+set access address-assignment pool v6-ia-na-pool family inet6 range v6-range low 2804:66ec:180::1/128
+set access address-assignment pool v6-ia-na-pool family inet6 range v6-range high 2804:66ec:180::ffff:ffff/128
+set access address-assignment pool refuse family inet6 prefix fd54:11::/48
+---(more 90%)---
+                                        
+set access address-assignment pool refuse family inet6 range prefix prefix-length 56
+set access address-assignment pool pool-clientes-01 family inet network 100.64.0.0/19
+set access address-assignment pool pool-clientes-01 family inet range 1 low 100.64.0.1
+set access address-assignment pool pool-clientes-01 family inet range 1 high 100.64.30.255
+set access address-assignment pool v6-prefix-pool-bloque family inet6 prefix 2001:1b50:9d00::/41
+set access address-assignment pool v6-prefix-pool-bloque family inet6 range prefix-range prefix-length 56
+set access domain map default access-profile aaa
+set routing-options rib inet.0
+set routing-options rib inet6.0 static route 2804:66ec::/32 discard
+set routing-options rib inet6.0 static route 2804:66ec:a000::/41 next-hop 2804:66ec:200::1
+set routing-options rib inet6.0 static route 2804:66ec:9a00::/41 next-hop 2804:66ec:200::1
+set routing-options rib inet6.0 static route 2804:66ec:9b01::/64 next-hop 2804:66ec:200::1
+set routing-options rib inet6.0 generate route 2804:66ec::/32
+set routing-options static route 45.189.141.0/24 next-hop 45.189.140.2
+---(more 91%)---
+                                        
+set routing-options static route 45.189.140.0/22 discard
+set routing-options static route 45.189.140.0/23 discard
+set routing-options static route 45.189.140.0/24 next-hop 45.189.140.12
+set routing-options static route 45.189.142.0/23 discard
+set routing-options static route 45.189.142.0/24 next-hop 45.189.140.12
+set routing-options static route 45.189.143.0/24 next-hop 45.189.140.12
+set routing-options static route 100.64.0.0/20 next-hop 45.189.140.2
+set routing-options static route 192.168.60.0/24 next-hop 45.189.140.2
+set routing-options static route 131.0.192.0/24 next-hop 100.100.1.131
+set routing-options static route 131.0.192.0/28 next-hop 100.100.1.131
+set routing-options router-id 45.189.140.13
+set routing-options autonomous-system 269591
+set protocols ospf3 area 0.0.0.0 interface xe-0/0/0.402 interface-type p2p
+set protocols pppoe traceoptions file TRACE-PPPOE
+set protocols pppoe traceoptions file files 5
+set protocols pppoe traceoptions level all
+set protocols pppoe traceoptions flag all
+set dynamic-profiles VELOCIDADE variables Bandwidth-IN default-value 32k
+set dynamic-profiles VELOCIDADE variables Bandwidth-IN mandatory
+set dynamic-profiles VELOCIDADE variables Bandwidth-OUT default-value 32k
+set dynamic-profiles VELOCIDADE variables Bandwidth-OUT mandatory
+set dynamic-profiles VELOCIDADE variables Burst-IN default-value 2m
+set dynamic-profiles VELOCIDADE variables Burst-OUT default-value 2m
+---(more 93%)---
+                                        
+set dynamic-profiles VELOCIDADE variables Policer-IN uid
+set dynamic-profiles VELOCIDADE variables Policer-OUT uid
+set dynamic-profiles VELOCIDADE variables Filter-IN uid
+set dynamic-profiles VELOCIDADE variables Filter-OUT uid
+set dynamic-profiles VELOCIDADE interfaces pp0 unit "$junos-interface-unit" family inet filter input "$Filter-IN"
+set dynamic-profiles VELOCIDADE interfaces pp0 unit "$junos-interface-unit" family inet filter output "$Filter-OUT"
+set dynamic-profiles VELOCIDADE firewall family inet filter "$Filter-IN" interface-specific
+set dynamic-profiles VELOCIDADE firewall family inet filter "$Filter-IN" term 10 then policer "$Policer-IN"
+set dynamic-profiles VELOCIDADE firewall family inet filter "$Filter-IN" term 10 then accept
+set dynamic-profiles VELOCIDADE firewall family inet filter "$Filter-OUT" interface-specific
+set dynamic-profiles VELOCIDADE firewall family inet filter "$Filter-OUT" term 10 then policer "$Policer-OUT"
+set dynamic-profiles VELOCIDADE firewall family inet filter "$Filter-OUT" term 10 then accept
+set dynamic-profiles VELOCIDADE firewall policer "$Policer-IN" logical-interface-policer
+---(more 95%)---
+                                        
+set dynamic-profiles VELOCIDADE firewall policer "$Policer-IN" if-exceeding bandwidth-limit "$Bandwidth-IN"
+set dynamic-profiles VELOCIDADE firewall policer "$Policer-IN" if-exceeding burst-size-limit "$Burst-IN"
+set dynamic-profiles VELOCIDADE firewall policer "$Policer-IN" then discard
+set dynamic-profiles VELOCIDADE firewall policer "$Policer-OUT" logical-interface-policer
+set dynamic-profiles VELOCIDADE firewall policer "$Policer-OUT" if-exceeding bandwidth-limit "$Bandwidth-OUT"
+set dynamic-profiles VELOCIDADE firewall policer "$Policer-OUT" if-exceeding burst-size-limit "$Burst-OUT"
+set dynamic-profiles VELOCIDADE firewall policer "$Policer-OUT" then discard
+set dynamic-profiles PPPOE predefined-variable-defaults input-filter bypass-in
+set dynamic-profiles PPPOE predefined-variable-defaults output-filter bypass-out
+set dynamic-profiles PPPOE routing-instances "$junos-routing-instance" routing-options access route $junos-framed-route-ip-address-prefix next-hop "$junos-framed-route-nexthop"
+set dynamic-profiles PPPOE routing-instances "$junos-routing-instance" routing-options access route $junos-framed-route-ip-address-prefix tag "$junos-framed-route-tag"
+set dynamic-profiles PPPOE routing-instances "$junos-routing-instance" routing-options access-internal route $junos-subscriber-ip-address qualified-next-hop "$junos-interface-name"
+---(more 96%)---
+                                        
+set dynamic-profiles PPPOE interfaces pp0 interface-mib
+set dynamic-profiles PPPOE interfaces pp0 unit "$junos-interface-unit" actual-transit-statistics
+set dynamic-profiles PPPOE interfaces pp0 unit "$junos-interface-unit" no-traps
+set dynamic-profiles PPPOE interfaces pp0 unit "$junos-interface-unit" ppp-options chap
+set dynamic-profiles PPPOE interfaces pp0 unit "$junos-interface-unit" ppp-options pap
+set dynamic-profiles PPPOE interfaces pp0 unit "$junos-interface-unit" ppp-options mru 1492
+set dynamic-profiles PPPOE interfaces pp0 unit "$junos-interface-unit" ppp-options mtu 1492
+set dynamic-profiles PPPOE interfaces pp0 unit "$junos-interface-unit" pppoe-options underlying-interface "$junos-underlying-interface"
+set dynamic-profiles PPPOE interfaces pp0 unit "$junos-interface-unit" pppoe-options server
+set dynamic-profiles PPPOE interfaces pp0 unit "$junos-interface-unit" keepalives interval 30
+set dynamic-profiles PPPOE interfaces pp0 unit "$junos-interface-unit" family inet rpf-check
+set dynamic-profiles PPPOE interfaces pp0 unit "$junos-interface-unit" family inet filter input "$junos-input-filter"
+---(more 97%)---
+                                        
+set dynamic-profiles PPPOE interfaces pp0 unit "$junos-interface-unit" family inet filter output "$junos-output-filter"
+set dynamic-profiles PPPOE interfaces pp0 unit "$junos-interface-unit" family inet unnumbered-address "$junos-loopback-interface"
+set dynamic-profiles PPPOE interfaces pp0 unit "$junos-interface-unit" family inet6 unnumbered-address "$junos-loopback-interface"
+set dynamic-profiles PPPOE protocols router-advertisement interface "$junos-interface-name" max-advertisement-interval 300
+set dynamic-profiles PPPOE protocols router-advertisement interface "$junos-interface-name" no-managed-configuration
+set dynamic-profiles PPPOE protocols router-advertisement interface "$junos-interface-name" other-stateful-configuration
+set dynamic-profiles PPPOE protocols router-advertisement interface "$junos-interface-name" prefix $junos-ipv6-ndra-prefix
+set dynamic-profiles SVLAN interfaces demux0 unit "$junos-interface-unit" no-traps
+set dynamic-profiles SVLAN interfaces demux0 unit "$junos-interface-unit" vlan-id "$junos-vlan-id"
+set dynamic-profiles SVLAN interfaces demux0 unit "$junos-interface-unit" demux-options underlying-interface "$junos-interface-ifd-name"
+set dynamic-profiles SVLAN interfaces demux0 unit "$junos-interface-unit" family inet6
+---(more 98%)---
+                                        
+set dynamic-profiles SVLAN interfaces demux0 unit "$junos-interface-unit" family pppoe access-concentrator DOBLER_PPPoE
+set dynamic-profiles SVLAN interfaces demux0 unit "$junos-interface-unit" family pppoe duplicate-protection
+set dynamic-profiles SVLAN interfaces demux0 unit "$junos-interface-unit" family pppoe dynamic-profile PPPOE
+set dynamic-profiles SVLAN interfaces demux0 unit "$junos-interface-unit" family pppoe max-sessions-vsa-ignore
+set dynamic-profiles IPOE predefined-variable-defaults input-filter bypass-in
+set dynamic-profiles IPOE predefined-variable-defaults output-filter bypass-out
+set dynamic-profiles IPOE routing-instances "$junos-routing-instance" interface "$junos-interface-name" unicast
+set dynamic-profiles IPOE routing-instances "$junos-routing-instance" routing-options access route $junos-framed-route-ip-address-prefix next-hop "$junos-framed-route-nexthop"
+set dynamic-profiles IPOE routing-instances "$junos-routing-instance" routing-options access route $junos-framed-route-ip-address-prefix tag "$junos-framed-route-tag"
+set dynamic-profiles IPOE routing-instances "$junos-routing-instance" routing-options access-internal route $junos-subscriber-ip-address qualified-next-hop "$junos-interface-name"
+set dynamic-profiles IPOE interfaces "$junos-interface-ifd-name" unit "$junos-interface-unit" demux-source inet
+---(more 99%)---
+                                        
+set dynamic-profiles IPOE interfaces "$junos-interface-ifd-name" unit "$junos-interface-unit" vlan-tags outer "$junos-stacked-vlan-id"
+set dynamic-profiles IPOE interfaces "$junos-interface-ifd-name" unit "$junos-interface-unit" vlan-tags inner "$junos-vlan-id"
+set dynamic-profiles IPOE interfaces "$junos-interface-ifd-name" unit "$junos-interface-unit" family inet unnumbered-address "$junos-loopback-interface"
+set dynamic-profiles IPOE interfaces "$junos-interface-ifd-name" unit "$junos-interface-unit" family inet6 unnumbered-address "$junos-loopback-interface"
+
+[edit]
