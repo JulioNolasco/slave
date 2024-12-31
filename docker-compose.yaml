@@ -9,7 +9,7 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "8000:8000"
+      - "8002:8002"
     volumes:
       - .:/app
     environment:
@@ -17,7 +17,7 @@ services:
     networks:
       custom-network:
         ipv4_address: 192.168.100.3
-    entrypoint: ["sh", "-c", "/app/init_routes.sh && python manage.py runserver 0.0.0.0:8000"]
+    entrypoint: ["sh", "-c", "/app/init_routes.sh && python manage.py runserver 0.0.0.0:8002"]
     restart: always
 
   wireguard-client:
