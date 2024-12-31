@@ -432,7 +432,7 @@ def capturar_resposta(conexao, prompts, tempo_maximo):
             resposta_parcial = conexao.recv(4096).decode('utf-8')
 
             # Lida com paginação e envia espaço para continuar
-            if "--More--" in resposta_parcial:
+            if "--More--" or "more" in resposta_parcial:
                 conexao.send(" ")  # Envia espaço para continuar
                 resposta_parcial = resposta_parcial.replace("--More--", "")  # Remove '--More--'
 
@@ -448,7 +448,7 @@ def capturar_resposta(conexao, prompts, tempo_maximo):
             resposta_parcial = conexao.read_very_eager().decode('ascii')
 
             # Lida com paginação e envia espaço para continuar
-            if "--More--" in resposta_parcial:
+            if "--More--" or "more" in resposta_parcial:
                 print("Detectado '--More--', enviando espaço via Telnet...")
                 conexao.write(b" ")  # Envia espaço para continuar
                 resposta_parcial = resposta_parcial.replace("--More--", "")  # Remove '--More--'
