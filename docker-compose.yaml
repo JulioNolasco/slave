@@ -5,6 +5,7 @@ services:
   web:
     image: slave_web
     privileged: true
+    user: "root"
     build:
       context: .
       dockerfile: Dockerfile
@@ -17,9 +18,8 @@ services:
     networks:
       custom-network:
         ipv4_address: 192.168.100.3
-    entrypoint: ["sh", "-c", "/app/init_routes.sh && python manage.py runserver 0.0.0.0:8002"]
+    entrypoint: [ "sh", "-c", "/app/init_routes.sh && python manage.py runserver 0.0.0.0:8002" ]
     restart: always
-    user: "root"
 
   wireguard-client:
     image: linuxserver/wireguard
@@ -28,6 +28,7 @@ services:
       custom-network:
         ipv4_address: 192.168.100.2
     privileged: true
+    user: "root"
     cap_add:
       - NET_ADMIN
       - SYS_MODULE
@@ -39,7 +40,7 @@ services:
       - ./config:/config
       - /lib/modules:/lib/modules
       - ./enable_forwarding.sh:/etc/enable_forwarding.sh
-    entrypoint: ["/bin/sh", "-c", "/etc/enable_forwarding.sh && /init"]
+    entrypoint: [ "/bin/sh", "-c", "/etc/enable_forwarding.sh && /init" ]
     ports:
       - 51820:51820/udp
     dns:
@@ -48,7 +49,6 @@ services:
     sysctls:
       - net.ipv4.conf.all.src_valid_mark=1
     restart: unless-stopped
-    user: "root"
 
 networks:
   custom-network:

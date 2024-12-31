@@ -5,6 +5,14 @@ LABEL authors="julioNolasco"
 RUN apt-get update && apt-get install -y iproute2
 RUN apt-get update && apt-get install -y iputils-ping
 
+# Crie o diretório .ssh se não existir
+RUN mkdir -p /root/.ssh && \
+    touch /root/.ssh/known_hosts
+
+# Defina permissões adequadas para o diretório e o arquivo
+RUN chmod 700 /root/.ssh && \
+    chmod 644 /root/.ssh/known_hosts
+
 WORKDIR /app
 
 # Copia o arquivo de requisitos do projeto

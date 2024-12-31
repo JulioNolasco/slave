@@ -302,9 +302,8 @@ def executar_backups():
 Acessa o equipamento via SSH e executa comandos.
 """
 def acessar_ssh(id, ip, usuario, senha, porta, comando, nome_equipamento, tempo_maximo=60):
-    # Obtenha a chave pública do servidor
-    ssh = paramiko.SSHClient()
-    ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())  # Política de adicionar automaticamente
+    cliente = paramiko.SSHClient()
+    cliente.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 
     # Configuração básica para logs
     logging.basicConfig(level=logging.ERROR, format='%(asctime)s - %(levelname)s - %(message)s')
